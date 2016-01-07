@@ -1,0 +1,102 @@
+var net = require('net');
+var path = require('path');
+
+var handlerScript = process.argv[2];
+var handler = null;
+
+var tcpServer = net.createServer(function (socket) {
+   // TODO
+   //if (handler) throw new Error("session is already connected");
+   socket.setKeepAlive(true);
+   socket.setNoDelay();
+   handler = createHandler(socket);
+});
+
+tcpServer.listen(0, '127.0.0.1', function () {
+   // Send the port number to the NodeHost
+   console.log('[Redouble.AspNet.Webpack.NodeHost:Listening on port ' + tcpServer.address().port + '\]');    
+   // Signal to the NodeServices base class that we're ready to accept invocations
+   console.log('[Microsoft.AspNet.NodeServices:Listening]');
+});
+
+function handleError(socket) {
+   socket.end();
+}
+
+function handleData(socket, data) {
+   var msg = JSON.parse(data);
+   var method = handler[msg.method];
+    
+   if (!method) {
+      writeError(socket, msg.id, "method [" + msg.method + "] does not exist");
+   }
+   else if (method.length != msg.args.length + 1) {      
+      writeError(socket, msg.id, "incorrect number of srguments for method [" + msg.method + "]");
+   }
+   else {
+      var callback = function(err, res) {      
+         if (err) writeError(socket, msg.id, err);
+         else writeResponse(socket, msg.id, res);
+      };
+      
+      var args = msg.args.concat(function (err, res) {
+         // only callback once
+         if (callback) callback(err, res);
+         callback = null;
+      });
+
+      method.apply(handler, args);
+   }
+}
+
+function writeResponse(socket, id, data) {
+   var msg = {
+      id: id,
+      type: 'response',
+      args: data
+   }
+   writeMessage(socket, msg);   
+}
+
+function writeError(socket, id, err) {   
+   var msg = {
+      id: id,
+      type: 'error',
+      args: err.message ? err.message : err.toString()
+   }
+   writeMessage(socket, msg);      
+}
+
+function writeEvent(socket, event, data) {
+   var msg = {
+      type: 'event',
+      method: event,
+      args: data
+   };
+   writeMessage(socket, msg);         
+}
+
+function writeMessage(socket, msg) {
+   var msgStr = JSON.stringify(msg);
+   var buffer = new Buffer(msgStr.length + 4);
+   buffer.writeUInt32LE(msgStr.length << 0, 0);
+   buffer.write(msgStr, 4);
+   socket.write(buffer);
+}
+
+function createHandler(socket) {
+   // load the handler module 
+   var exportFunc = require(handlerScript);
+   
+   if (typeof exportFunc !== 'function') throw new Error("handler script should export a default function");
+   
+   // call the default export function   
+   var handler = exportFunc(function(event, data) {
+      writeEvent(socket, event, data);
+   });
+
+   socket.on('error', function() { handleError(socket); });
+   socket.on('data', function(data) { handleData(socket, data); });
+
+   return handler;
+}

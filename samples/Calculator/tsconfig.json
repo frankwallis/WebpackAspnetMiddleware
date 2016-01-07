@@ -1,0 +1,14 @@
+﻿{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "jsx": "react"
+  },
+  "files": [
+    "Scripts/typings/tsd.d.ts",
+    "Scripts/calculator-store.ts",
+    "Scripts/calculator.tsx",
+    "Scripts/index.tsx"
+  ]
+}
