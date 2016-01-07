@@ -6,9 +6,9 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Redouble.Aspnet;
+using Redouble.Aspnet.Webpack;
 
-namespace Redouble.Aspnet.Test
+namespace Redouble.Aspnet.Webpack.Test
 {
     public class HotReloadTests
     {

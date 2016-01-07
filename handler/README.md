@@ -1,4 +1,4 @@
 webpack-aspnet-middleware
 ============================
 
-NodeJS Handler for [WebpackAspnetMiddleware](http://www.github.com/frankwallis/WebpackAspnetMiddleware)
+NodeJS Handler for [WebpackAspnetMiddleware](https://github.com/frankwallis/WebpackAspnetMiddleware)

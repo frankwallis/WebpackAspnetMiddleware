@@ -11,6 +11,8 @@ namespace Redouble.Aspnet.Webpack
     public class WebpackOptions
     {
         public string ConfigPath { get; set; }
+        public string PublicPath { get; set; }
+        public string WebRoot { get; set; }
     }
 
     public interface IWebpackService
@@ -56,14 +58,14 @@ namespace Redouble.Aspnet.Webpack
         public async Task<IWebpackFile> GetFile(string filename)
         {
             var host = await _host;
-            var absolutePath = Path.Combine(_environment.ApplicationBasePath, "wwwroot", filename.Substring(1));
+            var absolutePath = Path.Combine(_environment.ApplicationBasePath, _options.WebRoot, filename.Substring(1));
             var webpackFile = await host.Invoke<WebpackFile>("getFile", absolutePath);
             return webpackFile;
         }
 
         public bool IsWebpackFile(string filename)
         {
-            return (filename.IndexOf("/webpack/") == 0);
+            return (filename.IndexOf(_options.PublicPath) == 0);
         }
 
         public void OnValid(JToken args)

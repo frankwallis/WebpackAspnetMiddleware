@@ -31,7 +31,7 @@ module.exports = function(emit) {
    }
    
    function start(configPath, opts, callback) {
-      if (instance) callback(new Error("webpack is already started"))
+      if (instance) return callback(new Error("webpack is already started"))
       
       var webpackConfig = require(configPath);
       var compiler = webpack(webpackConfig);
@@ -51,7 +51,7 @@ module.exports = function(emit) {
    }
 
    function getFile(filename, callback) {
-      if (!instance) callback(new Error("webpack is not started"));
+      if (!instance) return callback(new Error("webpack is not started"));
       
       var mimeType = mime.lookup(filename);
       instance.fs.readFile(filename, 'utf8', function(err, contents) {
@@ -60,7 +60,7 @@ module.exports = function(emit) {
    }
    
    function stop(callback) {
-      if (!instance) callback(new Error("webpack is not started"));
+      if (!instance) return callback(new Error("webpack is not started"));
       instance.close(callback);
    }
    

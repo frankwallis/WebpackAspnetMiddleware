@@ -1,12 +1,9 @@
 {
     "version": "1.0.0-*",
-    "description": "",
-    "authors": [ "" ],
-    "tags": [ "" ],
-    "projectUrl": "",
-    "licenseUrl": "",
+    "description": "XUnit tests for Redouble.Aspnet.Webpack",
+    "authors": [ "Frank Wallis" ],
     "tooling": {
-        "defaultNamespace": "Redouble.Aspnet.Test"
+        "defaultNamespace": "Redouble.Aspnet.Webpack.Test"
     },
     "dependencies": {
         "Src": "",

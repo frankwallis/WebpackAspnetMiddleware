@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.NodeServices;
 using Microsoft.Extensions.PlatformAbstractions;
+using Redouble.Aspnet.Webpack;
 
-namespace Redouble.Aspnet.Test
+namespace Redouble.Aspnet.Webpack.Test
 {
     public class WebpackServiceMock : IWebpackService
     {        
