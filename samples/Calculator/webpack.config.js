@@ -7,7 +7,7 @@ module.exports = {
     entry: [ 'webpack-aspnet-middleware/client', './index' ],
     devtool: 'source-map',
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js']
+        extensions: ['', '.ts', '.tsx', '.js', '.jsx']
     },
     output: {
         publicPath: "/webpack/",
@@ -16,11 +16,25 @@ module.exports = {
     },
     plugins: [
         new WebpackNotifierPlugin(),
+        new webpack.optimize.OccurenceOrderPlugin(),new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin()
     ],
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style!css" }
+            { test: /\.css$/, loader: "style!css" },
+            {
+					test: /\.tsx?$/,
+					exclude: /node_modules/,
+					loader: 'babel',
+      			query: {
+						"presets": [
+							"es2015",
+							"react",
+                     "react-hmre"
+						]
+      			}
+            },
+            { test: /\.tsx?$/, loader: "ts", exclude: /node_modules/ }
         ]
     }  
 };
