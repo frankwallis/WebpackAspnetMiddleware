@@ -5,7 +5,7 @@ using Microsoft.AspNet.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Redouble.Aspnet.Webpack
+namespace Redouble.AspNet.Webpack
 {
     public class WebpackHotReload
     {

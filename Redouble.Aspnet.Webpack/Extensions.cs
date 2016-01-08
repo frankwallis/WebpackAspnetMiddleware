@@ -1,7 +1,7 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Redouble.Aspnet.Webpack
+namespace Redouble.AspNet.Webpack
 {   
    public static class Extensions {
       public static void AddWebpack(this IServiceCollection services, 

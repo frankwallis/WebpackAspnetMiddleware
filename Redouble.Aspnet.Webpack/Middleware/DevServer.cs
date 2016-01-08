@@ -2,7 +2,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using System.Threading.Tasks;
 
-namespace Redouble.Aspnet.Webpack
+namespace Redouble.AspNet.Webpack
 {
     public class WebpackDevServer
     {

@@ -3,10 +3,10 @@
     "description": "XUnit tests for Redouble.Aspnet.Webpack",
     "authors": [ "Frank Wallis" ],
     "tooling": {
-        "defaultNamespace": "Redouble.Aspnet.Webpack.Test"
+        "defaultNamespace": "Redouble.AspNet.Webpack.Test"
     },
     "dependencies": {
-        "Src": "",
+        "Redouble.AspNet.Webpack": "",
         "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
         "Microsoft.AspNet.TestHost": "1.0.0-*",
         "xunit": "2.1.0",

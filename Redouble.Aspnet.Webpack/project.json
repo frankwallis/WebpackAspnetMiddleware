@@ -1,23 +1,23 @@
 {
-  "version": "0.6.2",
+  "version": "0.6.3",
   "authors": ["Frank Wallis"],
-  "title": "WebpackAspnetMiddleware",
+  "title": "Redouble.AspNet.Webpack",
   "description": "Webpack development middleware for ASP.NET 5",
   "userSecretsId": "aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba",
   "tooling": {
-    "defaultNamespace": "Redouble.Aspnet.Webpack"
+    "defaultNamespace": "Redouble.AspNet.Webpack"
   },
   "dependencies": {     
-    "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.AspNet.Hosting": "1.0.0-*", 
     "Microsoft.AspNet.Http": "1.0.0-*",    
-    "Microsoft.AspNet.NodeServices": "1.0.0-alpha6"
+    "Microsoft.AspNet.NodeServices": "1.0.0-alpha6",
+    "Microsoft.Extensions.Logging": "1.0.0-*"
   },
   "frameworks": {
     "dnx451": {},
     "dnxcore50": {
       "dependencies": {
-         "System.Threading.Timer": "4.0.0-*",
+         "System.Threading.Timer": "4.0.1-*",
          "System.Net.Sockets": "4.1.0-*"
       }       
     }

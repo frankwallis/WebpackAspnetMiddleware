@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
 
-namespace Redouble.Aspnet.Webpack
+namespace Redouble.AspNet.Webpack
 {
     public class WebpackOptions
     {
