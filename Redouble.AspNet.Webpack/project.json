@@ -1,5 +1,5 @@
 {
-  "version": "0.6.3",
+  "version": "0.7.0",
   "authors": ["Frank Wallis"],
   "title": "Redouble.AspNet.Webpack",
   "description": "Webpack development middleware for ASP.NET 5",
@@ -8,17 +8,18 @@
     "defaultNamespace": "Redouble.AspNet.Webpack"
   },
   "dependencies": {     
-    "Microsoft.AspNet.Hosting": "1.0.0-*", 
-    "Microsoft.AspNet.Http": "1.0.0-*",    
+    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final", 
+    "Microsoft.AspNet.Http": "1.0.0-rc1-final",    
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
     "Microsoft.AspNet.NodeServices": "1.0.0-alpha6",
-    "Microsoft.Extensions.Logging": "1.0.0-*"
+    "Microsoft.Extensions.Logging": "1.0.0-rc1-final"
   },
   "frameworks": {
     "dnx451": {},
     "dnxcore50": {
       "dependencies": {
-         "System.Threading.Timer": "4.0.1-*",
-         "System.Net.Sockets": "4.1.0-*"
+         "System.Threading.Timer": "4.0.1-rc1-final",
+         "System.Net.Sockets": "4.1.0-rc1-final"
       }       
     }
   },

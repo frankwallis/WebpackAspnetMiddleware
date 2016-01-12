@@ -4,20 +4,33 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using Redouble.AspNet.Webpack;
 
 namespace Calculator
 {
     public class Startup
     {
-        public static void Main(string[] args)
-        {
-            var application = new WebApplicationBuilder()
-                  .UseConfiguration(WebApplicationConfiguration.GetDefault(args))
-                  .UseStartup<Startup>()
-                  .Build();
+      // rc2
+      //   public static void Main(string[] args)
+      //   {
+      //       var application = new WebApplicationBuilder()
+      //             .UseConfiguration(WebApplicationConfiguration.GetDefault(args))
+      //             .UseStartup<Startup>()
+      //             .Build();
 
-            application.Run();
+      //       application.Run();
+      //   }
+
+        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+        {
+            // Set up configuration sources.
+            var builder = new ConfigurationBuilder();
+                //.AddJsonFile("appsettings.json")
+                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+            builder.AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; set; }

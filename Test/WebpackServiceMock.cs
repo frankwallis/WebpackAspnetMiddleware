@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.NodeServices;
 using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json.Linq;
 using Redouble.AspNet.Webpack;
 
 namespace Redouble.AspNet.Webpack.Test
@@ -26,14 +27,14 @@ namespace Redouble.AspNet.Webpack.Test
            return Task.FromResult(_files[filename]);
         }
         
-        public void OnValid(ValidEventArgs e) {
+        public void OnValid(JToken e) {
            Valid(this, e);
         }
         public void OnInvalid() {
            Invalid(this, EventArgs.Empty);
         }
 
-        public event EventHandler<ValidEventArgs> Valid;
+        public event EventHandler<JToken> Valid;
         public event EventHandler Invalid;
         public bool IsWebpackFile(string filename) {
             return _files.ContainsKey(filename);   

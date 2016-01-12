@@ -14,7 +14,10 @@ namespace Redouble.AspNet.Webpack
          options.PublicPath = publicPath;
          options.WebRoot = webRoot;
          
-         services.AddSingleton<WebpackOptions>(options);
+         // rc2
+         //services.AddSingleton<WebpackOptions>(options);
+         //services.AddSingleton<IWebpackService, WebpackService>();
+         services.AddSingleton<WebpackOptions>((sp) => options);
          services.AddSingleton<IWebpackService, WebpackService>();
       }
 

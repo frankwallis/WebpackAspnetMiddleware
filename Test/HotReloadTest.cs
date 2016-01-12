@@ -5,6 +5,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using Redouble.AspNet.Webpack;
 
@@ -126,7 +127,7 @@ namespace Redouble.AspNet.Webpack.Test
                 var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
                 Assert.Equal(1, byteCount1);
                 
-                var e = new ValidEventArgs();
+                var e = new JObject();
                 mock.OnValid(e);
                 
                 // TODO
