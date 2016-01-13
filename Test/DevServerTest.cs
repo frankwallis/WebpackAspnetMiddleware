@@ -11,32 +11,36 @@ namespace Redouble.AspNet.Webpack.Test
 {
     public class DevServerTests
     {
-       private const string DEFAULT_RESPONSE = "X-X default response X-X";
-       
-        private TestServer CreateServer(IWebpackService webpackService) 
+        private const string DEFAULT_RESPONSE = "X-X default response X-X";
+
+        private TestServer CreateServer(IWebpackService webpackService)
         {
-           var mockServiceDescriptor = new ServiceDescriptor(typeof(IWebpackService), webpackService);
-           
-           return TestServer.Create(app =>
-            {
-                app.UseMiddleware<WebpackDevServer>();
-                app.Run(async context =>
-                {
-                    await context.Response.WriteAsync(DEFAULT_RESPONSE);
-                });
-            },
-            services => services.Add(mockServiceDescriptor));           
+            var mockServiceDescriptor = new ServiceDescriptor(typeof(IWebpackService), webpackService);
+
+            return TestServer.Create(app =>
+             {
+                 app.UseMiddleware<WebpackDevServer>();
+                 app.Run(async context =>
+                 {
+                     await context.Response.WriteAsync(DEFAULT_RESPONSE);
+                 });
+             },
+             services =>
+             {
+                 services.AddLogging();
+                 services.Add(mockServiceDescriptor);
+             });
         }
-        
+
         [Fact]
         public async Task DevServer_SetsResponseHeaders()
         {
-           // Arrange
-           var mock = new WebpackServiceMock();
-           mock.AddFile("/public/bundle.js", "bundle.js", "js"); 
-                                         
+            // Arrange
+            var mock = new WebpackServiceMock();
+            mock.AddFile("/public/bundle.js", "bundle.js", "js");
+
             using (var server = CreateServer(mock))
-            {      
+            {
                 // Act
                 // Actual request.
                 var response = await server.CreateRequest("/public/bundle.js").SendAsync("GET");
@@ -44,8 +48,8 @@ namespace Redouble.AspNet.Webpack.Test
                 // Assert
                 response.EnsureSuccessStatusCode();
                 Assert.Equal("bundle.js", await response.Content.ReadAsStringAsync());
-                
-                Assert.Equal(2, response.Content.Headers.Count());                
+
+                Assert.Equal(2, response.Content.Headers.Count());
                 Assert.Equal("js", response.Content.Headers.GetValues("Content-Type").FirstOrDefault());
                 Assert.Equal("9", response.Content.Headers.GetValues("Content-Length").FirstOrDefault());
             }
@@ -54,12 +58,12 @@ namespace Redouble.AspNet.Webpack.Test
         [Fact]
         public async Task DevServer_IgnoresNonWebpackFiles()
         {
-           // Arrange
-           var mock = new WebpackServiceMock();
-           mock.AddFile("/public/bundle.js", "bundle.js", "js"); 
-                                         
+            // Arrange
+            var mock = new WebpackServiceMock();
+            mock.AddFile("/public/bundle.js", "bundle.js", "js");
+
             using (var server = CreateServer(mock))
-            {      
+            {
                 // Act
                 // Actual request.
                 var response = await server.CreateRequest("/public/notbundle.js").SendAsync("GET");

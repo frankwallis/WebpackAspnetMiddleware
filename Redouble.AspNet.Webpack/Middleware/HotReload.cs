@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Builder;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -12,17 +14,21 @@ namespace Redouble.AspNet.Webpack
     {
         private RequestDelegate _next;
         private IWebpackService _webpackService;
-        private Timer heartbeatTimer;
+        private ILogger _logger;
+        private Timer _heartbeatTimer;
 
-        public WebpackHotReload(RequestDelegate next, IWebpackService webpackService)
+        public WebpackHotReload(RequestDelegate next,
+            IWebpackService webpackService,
+            ILogger<WebpackHotReload> logger)
         {
             _next = next;
-            _webpackService = webpackService;
+            _logger = logger;
 
+            _webpackService = webpackService;
             _webpackService.Valid += WebpackValid;
             _webpackService.Invalid += WebpackInvalid;
 
-            heartbeatTimer = new Timer(EmitHeartbeat, null, 0, 10000);
+            _heartbeatTimer = new Timer(EmitHeartbeat, null, 0, 1000);
         }
 
         public async Task Invoke(HttpContext context)
@@ -30,8 +36,8 @@ namespace Redouble.AspNet.Webpack
             /* filter out our requests */
             if (context.Request.Method != "GET")
             {
-               await _next(context);
-               return;
+                await _next(context);
+                return;
             }
 
             if (context.Request.Path != "/__webpack_hmr")
@@ -40,20 +46,25 @@ namespace Redouble.AspNet.Webpack
                 return;
             }
 
-            context.Response.OnCompleted(OnResponseCompleted, context.Request);
+            /* register for callback when request completes */
+            context.Response.OnCompleted(OnResponseCompleted, context);
 
             /* set some headers */
             context.Response.Headers["Cache-Control"] = "no-cache, no-transform";
             context.Response.Headers["Connection"] = "keep-alive";
             context.Response.ContentType = "text/event-stream;charset=utf-8";
 
+            /* 
+               This only returns when the client disconnects,
+               so the connection is kept open.
+            */
             await RegisterClient(context);
         }
 
-        private Task OnResponseCompleted(object request)
+        private Task OnResponseCompleted(object contextObj)
         {
-            System.Console.WriteLine("HMR Disconnected");
-            //UnregisterClient(request as HttpRequest);
+            var context = contextObj as HttpContext;
+            //UnregisterClient(context);
             return Task.FromResult<object>(null);
         }
 
@@ -61,31 +72,47 @@ namespace Redouble.AspNet.Webpack
 
         private Task RegisterClient(HttpContext context)
         {
+            _logger.LogInformation("[Webpack] client {0} connected", context.Connection.RemoteIpAddress);
+
             var client = new HmrClient(context);
             _clients.Add(client);
             return client.Wait.Task;
         }
-        private void UnregisterClient(HmrClient client)
+
+        private void UnregisterClient(HttpContext context)
         {
-            _clients.Remove(client);
-            client.Wait.SetResult(null);
+            var client = _clients.SingleOrDefault(hc => hc.Context == context);
+
+            if (client != null)
+            {
+                _logger.LogInformation("[Webpack] client {0} disconnected", context.Connection.RemoteIpAddress);
+
+                _clients.Remove(client);
+                client.Wait.SetResult(null);
+            }
         }
 
         private void WebpackValid(object sender, JToken e)
         {
-           var msg = e as JObject;
-           msg["action"] = "built";
-           Emit(msg.ToString(Newtonsoft.Json.Formatting.None)); 
+            _logger.LogInformation("[Webpack] bundle is now valid {0}", "\u2713");
+
+            var msg = e as JObject;
+            msg["action"] = "built";
+            Emit(msg.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         private void WebpackInvalid(object sender, EventArgs e)
         {
+            _logger.LogWarning("[Webpack] bundle is now invalid {0}", "\u274C");
+
             Emit("{ \"action\": \"building\" }");
         }
 
+        private static readonly string HEARTBEAT = "\uD83D\uDC93";
         private void EmitHeartbeat(object state)
         {
-            Emit("\uD83D\uDC93");
+            _logger.LogDebug("[Webpack] emitting heartbeat {0}", HEARTBEAT);
+            Emit(HEARTBEAT);
         }
 
         private async void Emit(string payload)
@@ -95,7 +122,7 @@ namespace Redouble.AspNet.Webpack
 
             var clients = new List<HmrClient>();
             clients.AddRange(_clients);
-            //Console.WriteLine(payload);
+
             clients.ForEach(async (client) =>
             {
                 try
@@ -105,8 +132,8 @@ namespace Redouble.AspNet.Webpack
                 }
                 catch (Exception ex)
                 {
-                   UnregisterClient(client);
-                   Console.WriteLine(ex);                    
+                    _logger.LogError("[Webpack] Unexpected error", ex);
+                    UnregisterClient(client.Context);
                 }
             });
         }

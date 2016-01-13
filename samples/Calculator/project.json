@@ -20,7 +20,7 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
-    "Redouble.AspNet.Webpack": "0.7.0"
+    "Redouble.AspNet.Webpack": "0.7.2"
   },
   "commands": {
      "web": "Microsoft.AspNet.Server.Kestrel"    

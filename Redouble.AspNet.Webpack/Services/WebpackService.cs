@@ -10,8 +10,11 @@ namespace Redouble.AspNet.Webpack
 {
     public class WebpackOptions
     {
+        /* path of webpack configuration file */
         public string ConfigPath { get; set; }
+        /* matches 'output.publicPath' in webpack config file */
         public string PublicPath { get; set; }
+        /* location of web root directory relative to project directory */
         public string WebRoot { get; set; }
     }
 

@@ -1,18 +1,23 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Redouble.AspNet.Webpack
 {
     public class WebpackDevServer
     {
-        RequestDelegate _next;
-        IWebpackService _webpackService;
-                
-        public WebpackDevServer(RequestDelegate next, IWebpackService webpackService)
+        private RequestDelegate _next;
+        private IWebpackService _webpackService;
+        private ILogger _logger;
+
+        public WebpackDevServer(RequestDelegate next,
+            IWebpackService webpackService,
+            ILogger<WebpackDevServer> logger)
         {
             _next = next;
-            _webpackService = webpackService;       
+            _logger = logger;
+            _webpackService = webpackService;
         }
 
         public async Task Invoke(HttpContext context)
@@ -29,6 +34,8 @@ namespace Redouble.AspNet.Webpack
                 await _next(context);
                 return;
             }
+
+            _logger.LogDebug("[Webpack] Handling request for {0}", context.Request.Path);
 
             /* get the file details */
             var file = await _webpackService.GetFile(context.Request.Path);

@@ -48,37 +48,37 @@ namespace Redouble.AspNet.Webpack
             if (this._client == null)
             {
                 this._client = new TcpClient();
-                
-                await this._client.ConnectAsync("127.0.0.1", _portNumber);   
-                this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);             
-                this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);             
+
+                await this._client.ConnectAsync("127.0.0.1", _portNumber);
+                this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
                 this._stream = this._client.GetStream();
-                
+
                 Task.Factory.StartNew(this.ReceiveAll);
             }
         }
 
-        private async void ReceiveAll() 
+        private async void ReceiveAll()
         {
             try
             {
-               while(this._client.Connected) 
-               {
-                  await this.Receive();
-               }
+                while (this._client.Connected)
+                {
+                    await this.Receive();
+                }
             }
             catch (Exception ex)
             {
                 this.OnDisconnected();
-            }           
+            }
         }
-        
+
         public async Task Receive()
         {
             byte[] header = new byte[4];
 
             if (await this._stream.ReadAsync(header, 0, header.Length) != 4)
-               throw new Exception("Error reading header");
+                throw new Exception("Error reading header");
 
             int bufferLength = BitConverter.ToInt32(header, 0);
             var buffer = new byte[bufferLength];
@@ -86,8 +86,8 @@ namespace Redouble.AspNet.Webpack
 
             while (bytesRead < bufferLength)
             {
-               var chunkSize = await this._stream.ReadAsync(buffer, bytesRead, bufferLength - bytesRead);
-               bytesRead += chunkSize;
+                var chunkSize = await this._stream.ReadAsync(buffer, bytesRead, bufferLength - bytesRead);
+                bytesRead += chunkSize;
             }
 
             this.HandleDataReceived(buffer);
@@ -120,11 +120,11 @@ namespace Redouble.AspNet.Webpack
         {
             var pending = this._pendingTasks.Find((task) => task.Id == id);
             this._pendingTasks.Remove(pending);
-            
+
             if (args is JToken)
-               pending.Deferred.SetResult(args as JToken);
-            else 
-               pending.Deferred.SetResult(new JValue(args));
+                pending.Deferred.SetResult(args as JToken);
+            else
+                pending.Deferred.SetResult(new JValue(args));
         }
 
         private void HandleError(int id, object args)
@@ -217,7 +217,12 @@ namespace Redouble.AspNet.Webpack
             }
         }
 
-        private int _portNumber = 0; 
+        /* 
+            OutOfProcessNodeInstance attaches to stdin and stdout and the node process uses stdout to
+            signal that it is up and running. 
+            node-host.js writes a specially formatted message to stdout to tell us what port it is serving on.
+        */
+        private int _portNumber = 0;
         private readonly static Regex PortMessageRegex = new Regex(@"^\[Redouble.AspNet.Webpack.NodeHost:Listening on port (\d+)\]$");
 
         protected override void OnOutputDataReceived(string outputData)
@@ -233,6 +238,7 @@ namespace Redouble.AspNet.Webpack
             }
         }
 
+        /* JSON.NET settings */
         private readonly static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -252,5 +258,4 @@ namespace Redouble.AspNet.Webpack
         public TaskCompletionSource<JToken> Deferred { get; set; }
         public int Id { get; set; }
     }
-
 }

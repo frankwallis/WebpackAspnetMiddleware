@@ -100,19 +100,20 @@ namespace Redouble.AspNet.Webpack.Test
 
             using (var host = NodeHost.CreateFromScript(script, ""))
             {
-               string emitEvt = "";
-               dynamic emitArgs = null;
-                
-               host.Emit += (sender, e) => {
-                  emitEvt = e.Name;
-                  emitArgs = e.Args; 
-               };
-               
-               var result = await host.Invoke<Int64>("start", new object[0]);
-               Assert.Equal((Int64) 42, result);
-               
-               Assert.Equal("event1", emitEvt);
-               //Assert.Equal("args1", emitArgs.arg1.toString());
+                string emitEvt = "";
+                dynamic emitArgs = null;
+
+                host.Emit += (sender, e) =>
+                {
+                    emitEvt = e.Name;
+                    emitArgs = e.Args;
+                };
+
+                var result = await host.Invoke<Int64>("start", new object[0]);
+                Assert.Equal((Int64)42, result);
+
+                Assert.Equal("event1", emitEvt);
+                //Assert.Equal("args1", emitArgs.arg1.toString());
             }
         }
 
