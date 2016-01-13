@@ -4,7 +4,9 @@ ASP.NET 5 Middleware providing a development file server and hot module reloadin
 
 # Overview
 
-WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) NodeJS projects. It uses the ASP.NET [NodeServices](https://github.com/aspnet/NodeServices.git) package to start a NodeJS instance running webpack. The development server middleware serves up the files produced by webopack and the hot reload middleware notifies the client when they change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) client library is used with no changes.
+WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) NodeJS projects. 
+
+The middleware starts a NodeJS instance running webpack using the ASP.NET [NodeServices](https://github.com/aspnet/NodeServices.git) package. The development server middleware serves up the files produced by the webopack instance, and the hot reload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) client library is used with no changes.
 
 # Instructions
 1) Install the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package:
@@ -23,14 +25,18 @@ WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middlewa
 3) Add the necessary services and middleware to your ASP.NET startup module:
 ```
   public void ConfigureServices(IServiceCollection services)
-  {
-    services.AddWebpack("webpack.config.js", "/webpack/"); // needed
-    services.AddMvc();
+  {    
+    /* these are the default values */   
+    services.AddWebpack(
+       configFile: "webpack.config.js",      // relative to project directory
+       publicPath: "/webpack/",              // should match output.publicPath in your webpack config
+       webRoot: "./wwwroot"                  // relative to project directory
+    );       
   }
 
   public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
   {
-    app.UseWebpackDevServer();                            // needed
+    app.UseWebpackDevServer();                            // necessary
     app.UseWebpackHotReload();                            // optional
 
     app.UseStaticFiles();

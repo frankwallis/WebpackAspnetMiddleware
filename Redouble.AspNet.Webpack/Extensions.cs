@@ -6,12 +6,12 @@ namespace Redouble.AspNet.Webpack
     public static class Extensions
     {
         public static void AddWebpack(this IServiceCollection services,
-           string configPath = "webpack.config.js",
+           string configFile = "webpack.config.js",
            string publicPath = "/",
            string webRoot = "wwwroot")
         {
             var options = new WebpackOptions();
-            options.ConfigPath = configPath;
+            options.ConfigFile = configFile;
             options.PublicPath = publicPath;
             options.WebRoot = webRoot;
 

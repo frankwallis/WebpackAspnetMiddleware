@@ -11,7 +11,7 @@ namespace Redouble.AspNet.Webpack
     public class WebpackOptions
     {
         /* path of webpack configuration file */
-        public string ConfigPath { get; set; }
+        public string ConfigFile { get; set; }
         /* matches 'output.publicPath' in webpack config file */
         public string PublicPath { get; set; }
         /* location of web root directory relative to project directory */
@@ -44,7 +44,7 @@ namespace Redouble.AspNet.Webpack
         {
             var host = NodeHost.Create("webpack-aspnet-middleware", basePath);
             host.Emit += WebpackEmit;
-            await host.Invoke("start", Path.Combine(basePath, _options.ConfigPath), null);
+            await host.Invoke("start", Path.Combine(basePath, _options.ConfigFile), null);
             return host;
         }
 

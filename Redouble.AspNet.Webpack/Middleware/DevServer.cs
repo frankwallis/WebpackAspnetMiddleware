@@ -35,7 +35,7 @@ namespace Redouble.AspNet.Webpack
                 return;
             }
 
-            _logger.LogDebug("[Webpack] Handling request for {0}", context.Request.Path);
+            _logger.LogDebug("Handling request for {0}", context.Request.Path);
 
             /* get the file details */
             var file = await _webpackService.GetFile(context.Request.Path);

@@ -72,10 +72,9 @@ namespace Redouble.AspNet.Webpack
 
         private Task RegisterClient(HttpContext context)
         {
-            _logger.LogInformation("[Webpack] client {0} connected", context.Connection.RemoteIpAddress);
-
             var client = new HmrClient(context);
             _clients.Add(client);
+            _logger.LogInformation("Client [{0}] connected", client.Description);
             return client.Wait.Task;
         }
 
@@ -85,7 +84,7 @@ namespace Redouble.AspNet.Webpack
 
             if (client != null)
             {
-                _logger.LogInformation("[Webpack] client {0} disconnected", context.Connection.RemoteIpAddress);
+                _logger.LogInformation("Client [{0}] disconnected", client.Description);
 
                 _clients.Remove(client);
                 client.Wait.SetResult(null);
@@ -94,7 +93,7 @@ namespace Redouble.AspNet.Webpack
 
         private void WebpackValid(object sender, JToken e)
         {
-            _logger.LogInformation("[Webpack] bundle is now valid {0}", "\u2713");
+            _logger.LogInformation("Bundle is now valid {0}", "\u2705");
 
             var msg = e as JObject;
             msg["action"] = "built";
@@ -103,7 +102,7 @@ namespace Redouble.AspNet.Webpack
 
         private void WebpackInvalid(object sender, EventArgs e)
         {
-            _logger.LogWarning("[Webpack] bundle is now invalid {0}", "\u274C");
+            _logger.LogWarning("Bundle is now invalid {0}", "\u274C");
 
             Emit("{ \"action\": \"building\" }");
         }
@@ -111,7 +110,7 @@ namespace Redouble.AspNet.Webpack
         private static readonly string HEARTBEAT = "\uD83D\uDC93";
         private void EmitHeartbeat(object state)
         {
-            _logger.LogDebug("[Webpack] emitting heartbeat {0}", HEARTBEAT);
+            _logger.LogDebug("Emitting heartbeat {0}", HEARTBEAT);
             Emit(HEARTBEAT);
         }
 
@@ -132,7 +131,7 @@ namespace Redouble.AspNet.Webpack
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("[Webpack] Unexpected error", ex);
+                    _logger.LogError("Unexpected error", ex);
                     UnregisterClient(client.Context);
                 }
             });
@@ -145,8 +144,24 @@ namespace Redouble.AspNet.Webpack
         {
             Context = context;
             Wait = new TaskCompletionSource<object>();
+            Description = GetClientAddress(context);
         }
         public TaskCompletionSource<object> Wait { get; private set; }
         public HttpContext Context { get; private set; }
+        public string Description { get; }
+
+        private string GetClientAddress(HttpContext context)
+        {
+            if (context == null)
+                return "unknown";
+            else if (context.Connection == null)
+                return "unknown";
+            else if (context.Connection.IsLocal)
+                return "localhost";
+            else if (context.Connection.RemoteIpAddress == null)
+                return "unknown";
+            else
+                return context.Connection.RemoteIpAddress.ToString();
+        }
     }
 }
