@@ -45,9 +45,6 @@ namespace Redouble.AspNet.Webpack.Test
                 response.EnsureSuccessStatusCode();
                 Assert.Equal("bundle.js", await response.Content.ReadAsStringAsync());
                 
-                Assert.Equal(1, response.Headers.Count());
-                Assert.Equal("*", response.Headers.GetValues("Access-Control-Allow-Origin").FirstOrDefault());
-                
                 Assert.Equal(2, response.Content.Headers.Count());                
                 Assert.Equal("js", response.Content.Headers.GetValues("Content-Type").FirstOrDefault());
                 Assert.Equal("9", response.Content.Headers.GetValues("Content-Length").FirstOrDefault());

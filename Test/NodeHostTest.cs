@@ -17,7 +17,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 'result1'); }}}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                 var result = await host.Invoke<string>("method1", new object[0]);
                 Assert.Equal("result1", result);
@@ -29,7 +29,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(arg1, arg2, callback) { callback(null, arg1 + arg2); }}}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                 var result = await host.Invoke<string>("method1", new object[] { "quick", "fox" });
                 Assert.Equal("quickfox", result.ToString());
@@ -41,7 +41,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback('an error occurred', null); }}}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                 try
                 {
@@ -60,7 +60,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(new Error('an error occurred'), null); }}}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                 try
                 {
@@ -74,11 +74,12 @@ namespace Redouble.AspNet.Webpack.Test
             }
         }
 
+        [Fact]
         public async Task NodeHost_HandlesIncorrectArgs()
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 42); }}}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                 try
                 {
@@ -97,7 +98,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";
 
-            using (var host = NodeHost.Create(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, ""))
             {
                string emitEvt = "";
                dynamic emitArgs = null;

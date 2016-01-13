@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0",
+  "version": "0.7.1",
   "authors": ["Frank Wallis"],
   "title": "Redouble.AspNet.Webpack",
   "description": "Webpack development middleware for ASP.NET 5",
@@ -18,8 +18,8 @@
     "dnx451": {},
     "dnxcore50": {
       "dependencies": {
-         "System.Threading.Timer": "4.0.1-rc1-final",
-         "System.Net.Sockets": "4.1.0-rc1-final"
+         "System.Threading.Timer": "4.0.1-beta-23516",
+         "System.Net.Sockets": "4.1.0-rc2-23706"
       }       
     }
   },

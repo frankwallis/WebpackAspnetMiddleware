@@ -29,8 +29,9 @@ namespace Redouble.AspNet.Webpack.Test
             },
             services => services.Add(mockServiceDescriptor));           
         }
-        
-        [Fact]
+
+/*
+        [Fact]        
         public async Task DevServer_SetsChunkedEncoding()
         {
            // Arrange
@@ -38,53 +39,21 @@ namespace Redouble.AspNet.Webpack.Test
                                          
             using (var server = CreateServer(mock))
             {      
-                // Act
-                // Actual request.
-                //var response = await server.CreateRequest("/__webpack_hmr").SendAsync("GET");
-                var client = server.CreateClient();
-                var response = await client.GetAsync("/__webpack_hmr");
-                                
-                                System.Console.WriteLine(response.Content);
-
+               using (var client = server.CreateClient())
+               {
                 // Assert
                 response.EnsureSuccessStatusCode();
-                Assert.Equal(3, response.Headers.Count());
-                Assert.True(response.Headers.TransferEncodingChunked);
-                Assert.Null(response.Headers.ConnectionClose);
-                //Assert.Null(response.Content.Headers.ContentLength);
+                Assert.Equal(2, response.Headers.Count());
+                Assert.True(response.Headers.CacheControl.NoTransform);
+                Assert.True(response.Headers.CacheControl.NoCache);
+                Assert.True(response.Headers.Connection.Contains("keep-alive"));
+                Assert.Null(response.Headers.TransferEncodingChunked);
+                Assert.Null(response.Headers.ConnectionClose);                
+                Assert.Null(response.Content.Headers.ContentLength);
+               }         
             }
         }
-        
-        [Fact]
-        public async Task DevServer_KeepsConnectionAlive()
-        {
-           // Arrange
-           var mock = new WebpackServiceMock();
-                                         
-            using (var server = CreateServer(mock))
-            {      
-                // Act
-                // Actual request.
-                var client = server.CreateClient();
-                var stream = await client.GetStreamAsync("/__webpack_hmr");
-                
-                var buffer = new byte[256];
-                var streamReader = new System.IO.StreamReader(stream);
-                
-                var handshake = await streamReader.ReadLineAsync();
-                Assert.Equal(0, handshake.Length);
-
-
-                var heartbeat = await streamReader.ReadLineAsync();
-                Assert.Equal(0, heartbeat.Length);
-                //var byteCount = await stream.ReadAsync(buffer, 0, 256);
-                
-                // Assert
-                //Assert.Equal(1, byteCount);
-                //Assert.Equal(System.Convert.ToByte('\n'), buffer[0]);
-            }
-        }
-
+ */       
         [Fact]
         public async Task DevServer_EmitsHeartbeats()
         {
@@ -93,23 +62,25 @@ namespace Redouble.AspNet.Webpack.Test
                                          
             using (var server = CreateServer(mock))
             {      
-                // Act
-                // Actual request.                
-                var client = server.CreateClient();
-                var stream = await client.GetStreamAsync("/__webpack_hmr");
-                
-                var buffer = new byte[256];
-                var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
-                Assert.Equal(1, byteCount1);
+               using (var client = server.CreateClient())
+               {
+                  // Act
+                  var stream = await client.GetStreamAsync("/__webpack_hmr");
+                  
+                  var buffer = new byte[256];
+                  var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
+                  Assert.Equal(14, byteCount1);
 
-                var cancellationTokenSource = new CancellationTokenSource(20000);                
-                var byteCount2 = await stream.ReadAsync(buffer, 0, 256, cancellationTokenSource.Token);
-                
-                Assert.Equal(2, byteCount2);
-                Assert.Equal(System.Convert.ToByte('\n'), buffer[0]);
+                  var cancellationTokenSource = new CancellationTokenSource(10000);                
+                  var byteCount2 = await stream.ReadAsync(buffer, 0, 256, cancellationTokenSource.Token);
+                  
+                  Assert.Equal(14, byteCount2);
+                  Assert.Equal("data: \uD83D\uDC93\r\n\r\n", System.Text.Encoding.UTF8.GetString(buffer).Substring(0, byteCount2 - 2));
+               }                                    
             }
         }
 
+        [Fact]
         public async Task DevServer_EmitsOnValid()
         {
            // Arrange
@@ -118,22 +89,23 @@ namespace Redouble.AspNet.Webpack.Test
                                          
             using (var server = CreateServer(mock))
             {      
+               using (var client = server.CreateClient())
+               {
                 // Act
-                // Actual request.
-                var client = server.CreateClient();
                 var stream = await client.GetStreamAsync("/__webpack_hmr");
                 
                 var buffer = new byte[256];
                 var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
-                Assert.Equal(1, byteCount1);
+                Assert.Equal(14, byteCount1);
                 
                 var e = new JObject();
                 mock.OnValid(e);
                 
                 // TODO
                 var byteCount2 = await stream.ReadAsync(buffer, 0, 256);
-                Assert.Equal(1, byteCount2);
-                Assert.Equal(System.Convert.ToByte('\n'), buffer[0]);
+                Assert.Equal(28, byteCount2);
+                Assert.Equal("data: {\"action\":\"built\"}\r\n\r\n", System.Text.Encoding.UTF8.GetString(buffer).Substring(0, byteCount2));
+               }
             }
         }
     }

@@ -31,7 +31,7 @@ function handleData(socket, data) {
       writeError(socket, msg.id, "method [" + msg.method + "] does not exist");
    }
    else if (method.length != msg.args.length + 1) {      
-      writeError(socket, msg.id, "incorrect number of srguments for method [" + msg.method + "]");
+      writeError(socket, msg.id, "incorrect number of arguments for method [" + msg.method + "]");
    }
    else {
       var callback = function(err, res) {      

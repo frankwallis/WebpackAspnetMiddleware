@@ -58,17 +58,17 @@ namespace Redouble.AspNet.Webpack
             }
         }
 
-        private async void ReceiveAll() {
+        private async void ReceiveAll() 
+        {
             try
             {
-               while(true) 
+               while(this._client.Connected) 
                {
                   await this.Receive();
                }
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
-                System.Console.WriteLine("error");
                 this.OnDisconnected();
             }           
         }
@@ -120,7 +120,11 @@ namespace Redouble.AspNet.Webpack
         {
             var pending = this._pendingTasks.Find((task) => task.Id == id);
             this._pendingTasks.Remove(pending);
-            pending.Deferred.SetResult(args as JToken);
+            
+            if (args is JToken)
+               pending.Deferred.SetResult(args as JToken);
+            else 
+               pending.Deferred.SetResult(new JValue(args));
         }
 
         private void HandleError(int id, object args)
