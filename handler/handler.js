@@ -5,13 +5,16 @@ module.exports = function(emit) {
    var mime = require("mime");
    
    var instance = null;
+   var valid = false;
 
    function onInvalid(compiler, callback) {
-      emit('invalid');
+      if (valid) emit('invalid');
+      valid = false;
       if (callback) callback();
    }
 
    function onValid(stats) {
+      valid = true;
       stats = stats.toJson();
 
       var map = stats.modules.reduce(function(result, module) {
@@ -28,6 +31,7 @@ module.exports = function(emit) {
       };
       
       emit('valid', args);
+      flushPending();
    }
    
    function start(configPath, opts, callback) {
@@ -50,13 +54,28 @@ module.exports = function(emit) {
       });  
    }
 
+   var pending = [];
+   
+   function flushPending() {
+      pending.forEach(cb => cb);
+      pending = [];
+   }
+   
+   function runOnValid(cb) {
+      if (valid) cb();
+      else pending.push(cb);
+   }
+   
    function getFile(filename, callback) {
       if (!instance) return callback(new Error("webpack is not started"));
-      
-      var mimeType = mime.lookup(filename);
-      instance.fs.readFile(filename, 'utf8', function(err, contents) {
-         callback(err, { contents: contents, mimeType: mimeType });         
-      });      
+
+      runOnValid(function() {
+         var mimeType = mime.lookup(filename);
+         
+         instance.fs.readFile(filename, 'utf8', function(err, contents) {
+            callback(err, { contents: contents, mimeType: mimeType });         
+         });
+      });
    }
    
    function stop(callback) {
