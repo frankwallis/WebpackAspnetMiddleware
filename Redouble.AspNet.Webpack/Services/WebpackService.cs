@@ -85,7 +85,7 @@ namespace Redouble.AspNet.Webpack
         }
         public void OnInvalid()
         {
-            _logger.LogWarning("{0}  Bundle is now invalid", "\u274C");
+            _logger.LogWarning("{0}  Bundle is invalid", "\u274C");
 
             if (Invalid != null)
             {

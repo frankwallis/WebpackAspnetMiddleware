@@ -1,6 +1,6 @@
 {
   "name": "webpack-aspnet-middleware",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "Webpack Middleware for ASP.NET 5",
   "main": "handler.js",
   "homepage": "https://github.com/frankwallis/WebpackAspnetMiddleware",

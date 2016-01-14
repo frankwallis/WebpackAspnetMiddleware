@@ -31,7 +31,7 @@ module.exports = function(emit) {
       };
       
       emit('valid', args);
-      flushPending();
+      process.nextTick(flushPending);
    }
    
    function start(configPath, opts, callback) {
@@ -57,8 +57,10 @@ module.exports = function(emit) {
    var pending = [];
    
    function flushPending() {
-      pending.forEach(cb => cb);
-      pending = [];
+      if (valid) {
+         pending.forEach(cb => cb());
+         pending = [];
+      }
    }
    
    function runOnValid(cb) {
