@@ -153,7 +153,11 @@ namespace Redouble.AspNet.Webpack
             this._pendingTasks.Add(pending);
 
             var msgStr = JsonConvert.SerializeObject(msg, jsonSerializerSettings);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(msgStr);
+            var buffer = new byte[msgStr.Length + 4];
+            var header = BitConverter.GetBytes(msgStr.Length);
+            header.CopyTo(buffer, 0);            
+            System.Text.Encoding.UTF8.GetBytes(msgStr, 0, msgStr.Length, buffer, 4);
+            
             await this._stream.WriteAsync(buffer, 0, buffer.Length);
             await this._stream.FlushAsync();
 

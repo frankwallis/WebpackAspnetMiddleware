@@ -96,7 +96,15 @@ function createHandler(socket) {
    });
 
    socket.on('error', function() { handleError(socket); });
-   socket.on('data', function(data) { handleData(socket, data); });
+   socket.on('data', function(buffer) {
+      while(buffer.length > 0) {
+         var size = buffer.readIntLE(0, 4);
+         if (size <= 0) throw new Error("Invalid message");
+         var msg = buffer.slice(4, size + 4);
+         buffer = buffer.slice(size + 4); 
+         handleData(socket, msg); 
+      }
+   });
 
    return handler;
 }

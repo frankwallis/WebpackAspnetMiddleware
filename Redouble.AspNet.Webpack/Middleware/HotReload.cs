@@ -87,8 +87,6 @@ namespace Redouble.AspNet.Webpack
 
         private void WebpackValid(object sender, JToken e)
         {
-            _logger.LogInformation("Bundle is now valid {0}", "\u2705");
-
             var msg = e as JObject;
             msg["action"] = "built";
             Emit(msg.ToString(Newtonsoft.Json.Formatting.None));
@@ -96,8 +94,6 @@ namespace Redouble.AspNet.Webpack
 
         private void WebpackInvalid(object sender, EventArgs e)
         {
-            _logger.LogWarning("Bundle is now invalid {0}", "\u274C");
-
             Emit("{ \"action\": \"building\" }");
         }
 

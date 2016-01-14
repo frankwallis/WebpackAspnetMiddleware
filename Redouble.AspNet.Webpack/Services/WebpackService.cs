@@ -1,10 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNet.NodeServices;
-using System.Collections.Generic;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -29,11 +28,15 @@ namespace Redouble.AspNet.Webpack
     public class WebpackService : IWebpackService
     {
         private IApplicationEnvironment _environment;
+        private ILogger _logger;
         private WebpackOptions _options;
 
-        public WebpackService(IApplicationEnvironment environment, WebpackOptions options)
+        public WebpackService(IApplicationEnvironment environment,
+            ILogger<WebpackService> logger,
+            WebpackOptions options)
         {
             _environment = environment;
+            _logger = logger;
             _options = options;
             _host = CreateHost(_environment.ApplicationBasePath);
         }
@@ -73,6 +76,8 @@ namespace Redouble.AspNet.Webpack
 
         public void OnValid(JToken args)
         {
+            _logger.LogInformation("{0}  Bundle is now valid", "\u2705");
+
             if (Valid != null)
             {
                 Valid(this, args);
@@ -80,6 +85,8 @@ namespace Redouble.AspNet.Webpack
         }
         public void OnInvalid()
         {
+            _logger.LogWarning("{0}  Bundle is now invalid", "\u274C");
+
             if (Invalid != null)
             {
                 Invalid(this, EventArgs.Empty);
