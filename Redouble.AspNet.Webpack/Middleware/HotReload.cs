@@ -10,16 +10,16 @@ using Newtonsoft.Json.Linq;
 
 namespace Redouble.AspNet.Webpack
 {
-    public class WebpackHotReload
+    public class HotReload
     {
         private RequestDelegate _next;
         private IWebpackService _webpackService;
         private ILogger _logger;
         private Timer _heartbeatTimer;
 
-        public WebpackHotReload(RequestDelegate next,
+        public HotReload(RequestDelegate next,
             IWebpackService webpackService,
-            ILogger<WebpackHotReload> logger)
+            ILogger<HotReload> logger)
         {
             _next = next;
             _logger = logger;
@@ -46,49 +46,43 @@ namespace Redouble.AspNet.Webpack
                 return;
             }
 
-            /* register for callback when request completes */
-            context.Response.OnCompleted(OnResponseCompleted, context);
-
-            /* set some headers */
+            /* set some headers to force the response to auto-chunk and keep-alive */
             context.Response.Headers["Cache-Control"] = "no-cache, no-transform";
             context.Response.Headers["Connection"] = "keep-alive";
             context.Response.ContentType = "text/event-stream;charset=utf-8";
 
+            /* register the client to receive events */
+            var client = RegisterClient(context);
+
             /* 
-               This only returns when the client disconnects,
+               This only completes when the client disconnects,
                so the connection is kept open.
             */
-            await RegisterClient(context);
-        }
-
-        private Task OnResponseCompleted(object contextObj)
-        {
-            var context = contextObj as HttpContext;
-            //UnregisterClient(context);
-            return Task.FromResult<object>(null);
+            await client.CompletionSource.Task;
+            
+            /*
+               This prevents HttpFrame.WriteChunkedResponseSuffix from throwing
+               an EPIPE error with stacktrace due to the socket being disconnected
+            */
+            throw new QuietException("Redouble.AspNet.Webpack.HotReload: client disconnected");
         }
 
         private List<HmrClient> _clients = new List<HmrClient>();
 
-        private Task RegisterClient(HttpContext context)
+        private HmrClient RegisterClient(HttpContext context)
         {
             var client = new HmrClient(context);
             _clients.Add(client);
             _logger.LogInformation("Client [{0}] connected", client.Description);
-            return client.Wait.Task;
+            return client;
         }
 
         private void UnregisterClient(HttpContext context)
         {
             var client = _clients.SingleOrDefault(hc => hc.Context == context);
-
-            if (client != null)
-            {
-                _logger.LogInformation("Client [{0}] disconnected", client.Description);
-
-                _clients.Remove(client);
-                client.Wait.SetResult(null);
-            }
+            _clients.Remove(client);
+            _logger.LogInformation("Client [{0}] disconnected", client.Description);
+            client.CompletionSource.SetResult(null);
         }
 
         private void WebpackValid(object sender, JToken e)
@@ -129,9 +123,9 @@ namespace Redouble.AspNet.Webpack
                     await client.Context.Response.Body.WriteAsync(buffer, 0, buffer.Length);
                     await client.Context.Response.Body.FlushAsync();
                 }
-                catch (Exception ex)
+                catch (Exception ex) // change to IOException in rc2
                 {
-                    _logger.LogError("Unexpected error", ex);
+                    _logger.LogDebug("Write failed: ", ex);
                     UnregisterClient(client.Context);
                 }
             });
@@ -143,10 +137,10 @@ namespace Redouble.AspNet.Webpack
         public HmrClient(HttpContext context)
         {
             Context = context;
-            Wait = new TaskCompletionSource<object>();
+            CompletionSource = new TaskCompletionSource<object>();
             Description = GetClientAddress(context);
         }
-        public TaskCompletionSource<object> Wait { get; private set; }
+        public TaskCompletionSource<object> CompletionSource { get; private set; }
         public HttpContext Context { get; private set; }
         public string Description { get; }
 
@@ -163,5 +157,13 @@ namespace Redouble.AspNet.Webpack
             else
                 return context.Connection.RemoteIpAddress.ToString();
         }
+    }
+    
+    class QuietException : Exception {
+       public QuietException(string message): base(message) {}
+       
+       public override string ToString() {
+          return Message;
+       }
     }
 }

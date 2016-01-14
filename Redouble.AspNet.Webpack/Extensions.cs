@@ -24,12 +24,12 @@ namespace Redouble.AspNet.Webpack
 
         public static void UseWebpackHotReload(this IApplicationBuilder app)
         {
-            app.UseMiddleware<WebpackHotReload>();
+            app.UseMiddleware<HotReload>();
         }
 
         public static void UseWebpackDevServer(this IApplicationBuilder app)
         {
-            app.UseMiddleware<WebpackDevServer>();
+            app.UseMiddleware<DevServer>();
         }
     }
 }

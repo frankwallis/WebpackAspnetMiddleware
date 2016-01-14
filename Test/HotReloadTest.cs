@@ -21,7 +21,7 @@ namespace Redouble.AspNet.Webpack.Test
 
             return TestServer.Create(app =>
              {
-                 app.UseMiddleware<WebpackHotReload>();
+                 app.UseMiddleware<HotReload>();
                  app.Run(async context =>
                  {
                      await context.Response.WriteAsync(DEFAULT_RESPONSE);

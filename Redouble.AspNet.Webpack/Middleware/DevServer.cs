@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace Redouble.AspNet.Webpack
 {
-    public class WebpackDevServer
+    public class DevServer
     {
         private RequestDelegate _next;
         private IWebpackService _webpackService;
         private ILogger _logger;
 
-        public WebpackDevServer(RequestDelegate next,
+        public DevServer(RequestDelegate next,
             IWebpackService webpackService,
-            ILogger<WebpackDevServer> logger)
+            ILogger<DevServer> logger)
         {
             _next = next;
             _logger = logger;

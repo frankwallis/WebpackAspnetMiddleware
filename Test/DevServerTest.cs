@@ -19,7 +19,7 @@ namespace Redouble.AspNet.Webpack.Test
 
             return TestServer.Create(app =>
              {
-                 app.UseMiddleware<WebpackDevServer>();
+                 app.UseMiddleware<DevServer>();
                  app.Run(async context =>
                  {
                      await context.Response.WriteAsync(DEFAULT_RESPONSE);
