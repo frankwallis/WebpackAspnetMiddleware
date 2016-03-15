@@ -1,5 +1,5 @@
 {
-  "version": "0.7.7",
+  "version": "0.7.8",
   "authors": ["Frank Wallis"],
   "title": "Redouble.AspNet.Webpack",
   "description": "Webpack development middleware for ASP.NET 5",
@@ -19,7 +19,7 @@
     "dnxcore50": {
       "dependencies": {
          "System.Threading.Timer": "4.0.1-beta-23516",
-         "System.Net.Sockets": "4.1.0-rc2-23706"
+         "System.Net.Sockets": "4.1.0-beta-23516"
       }       
     }
   },
@@ -28,5 +28,5 @@
   ],
   "tags": [ "webpack", "aspnet", "middleware", "dev", "server", "hot", "module", "reload", "swap", "hmr", "react"],
   "projectUrl": "https://github.com/frankwallis/WebpackAspnetMiddleware",
-  "summary": "ASP.NET 5 middleware providing a development server and hot modle reloading for applications built with Webpack"
+  "summary": "ASP.NET 5 middleware providing a development server and hot module reloading for applications built with Webpack"
 }
