@@ -33,7 +33,7 @@ export class Calculator extends React.Component<any, any> {
     render() {
         // build the rows of digits
         let buttons = [
-            // uncomment me! 
+            // UNCOMMENT ME! 
             // [1, 2, 3].map((digit) => this.inputButton(digit)),
             
             [4, 5, 6].map((digit) => this.inputButton(digit)),
