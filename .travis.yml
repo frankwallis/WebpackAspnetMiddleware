@@ -3,7 +3,8 @@
    - latest 
  install:
    - curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh && source ~/.dnx/dnvm/dnvm.sh 
-   - dnvm upgrade 
+   - dnvm upgrade
+   - dnvm list
    - dnu restore 
  script: 
    - dnx -p Test/project.json test -parallel none
