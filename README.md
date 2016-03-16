@@ -2,6 +2,8 @@
 
 ASP.NET 5 Middleware providing a development file server and hot module reloading for applications built with [Webpack](https://github.com/webpack/webpack)
 
+[![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
+
 # Overview
 
 WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) NodeJS packages. 
