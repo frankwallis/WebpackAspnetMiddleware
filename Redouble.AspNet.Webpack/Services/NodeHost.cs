@@ -49,7 +49,7 @@ namespace Redouble.AspNet.Webpack
             {
                 this._client = new TcpClient();
 
-                await this._client.ConnectAsync("127.0.0.1", _portNumber);
+                await this._client.ConnectAsync("0.0.0.0", _portNumber);
                 this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
                 this._stream = this._client.GetStream();
