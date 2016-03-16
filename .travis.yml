@@ -1,4 +1,5 @@
  language: CSharp
+ sudo: required
  mono:
    - latest 
  install:
