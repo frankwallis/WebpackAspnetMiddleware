@@ -4,6 +4,9 @@ ASP.NET 5 Middleware providing a development file server and hot module reloadin
 
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
+For aspnet@1.0.0-rc1, use WebpackAspnetMiddleware@0.7.9
+For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@0.8.x
+
 # Overview
 
 WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) NodeJS packages. 
@@ -70,10 +73,10 @@ b) Add the hot reload client to the ```entry``` array:
 ```
 git clone https://github.com/frankwallis/WebpackAspnetMiddleware
 cd WebpackAspnetMiddleware
-dnu restore
-cd samples/Calculator
+dotnet restore
+cd Calculator
 npm install
-dnx web
+dotnet run
 ```
 Open up http://localhost:5000 in your browser and then try editing samples/Calculator/Scripts/calculator.tsx.
 

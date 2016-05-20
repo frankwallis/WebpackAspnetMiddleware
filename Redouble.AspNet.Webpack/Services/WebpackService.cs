@@ -1,9 +1,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -27,18 +28,18 @@ namespace Redouble.AspNet.Webpack
 
     public class WebpackService : IWebpackService
     {
-        private IApplicationEnvironment _environment;
+        private IHostingEnvironment _environment;
         private ILogger _logger;
         private WebpackOptions _options;
 
-        public WebpackService(IApplicationEnvironment environment,
+        public WebpackService(IHostingEnvironment environment,
             ILogger<WebpackService> logger,
             WebpackOptions options)
         {
             _environment = environment;
             _logger = logger;
             _options = options;
-            _host = CreateHost(_environment.ApplicationBasePath);
+            _host = CreateHost(_environment.ContentRootPath);
         }
 
         private Task<NodeHost> _host;
@@ -64,7 +65,7 @@ namespace Redouble.AspNet.Webpack
         public async Task<IWebpackFile> GetFile(string filename)
         {
             var host = await _host;
-            var absolutePath = Path.Combine(_environment.ApplicationBasePath, _options.WebRoot, filename.Substring(1));
+            var absolutePath = Path.Combine(_environment.ContentRootPath, _options.WebRoot, filename.Substring(1));
             var webpackFile = await host.Invoke<WebpackFile>("getFile", absolutePath);
             return webpackFile;
         }

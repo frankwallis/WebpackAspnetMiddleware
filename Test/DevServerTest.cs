@@ -1,8 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.TestHost;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Redouble.AspNet.Webpack;
@@ -17,19 +18,21 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var mockServiceDescriptor = new ServiceDescriptor(typeof(IWebpackService), webpackService);
 
-            return TestServer.Create(app =>
-             {
-                 app.UseMiddleware<DevServer>();
-                 app.Run(async context =>
-                 {
-                     await context.Response.WriteAsync(DEFAULT_RESPONSE);
-                 });
-             },
-             services =>
-             {
-                 services.AddLogging();
-                 services.Add(mockServiceDescriptor);
-             });
+            var builder = new WebHostBuilder()
+               .Configure(app =>
+                       {
+                           app.UseWebpackDevServer();
+                           app.Run(async context =>
+                           {
+                               await context.Response.WriteAsync(DEFAULT_RESPONSE);
+                           });
+                       })
+               .ConfigureServices(services =>
+                       {
+                           services.AddLogging();
+                           services.Add(mockServiceDescriptor);
+                       });
+            return new TestServer(builder);
         }
 
         [Fact]

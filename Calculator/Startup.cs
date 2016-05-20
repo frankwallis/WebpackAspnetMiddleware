@@ -1,6 +1,7 @@
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,25 +12,29 @@ namespace Calculator
 {
     public class Startup
     {
-      // rc2
-      //   public static void Main(string[] args)
-      //   {
-      //       var application = new WebApplicationBuilder()
-      //             .UseConfiguration(WebApplicationConfiguration.GetDefault(args))
-      //             .UseStartup<Startup>()
-      //             .Build();
+        public static void Main(string[] args)
+        {
+            var application = new WebHostBuilder()
+               .UseContentRoot(Directory.GetCurrentDirectory())
+                  //.UseConfiguration(WebApplicationConfiguration.GetDefault(args))
+                  //.UseIISIntegration()
+                  .UseKestrel()
+                  .UseStartup<Startup>()
+                  .Build();
 
-      //       application.Run();
-      //   }
-
-        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+            application.Run();
+        }
+            
+        public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
-            var builder = new ConfigurationBuilder();
+            System.Console.WriteLine(env.ContentRootPath);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath);
+                //.AddEnvironmentVariables();
                 //.AddJsonFile("appsettings.json")
                 //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 

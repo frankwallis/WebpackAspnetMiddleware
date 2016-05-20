@@ -21,7 +21,7 @@ tcpServer.listen(0, '127.0.0.1', function() {
    // Send the port number to the NodeHost
    console.log('[Redouble.AspNet.Webpack.NodeHost:Listening on port ' + tcpServer.address().port + '\]');
    // Signal to the NodeServices base class that we're ready to accept invocations
-   console.log('[Microsoft.AspNet.NodeServices:Listening]');
+   console.log('[Microsoft.AspNetCore.NodeServices:Listening]');
 });
 
 function handleError(socket) {

@@ -3,9 +3,8 @@
  mono:
    - latest 
  install:
-   - curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh && source ~/.dnx/dnvm/dnvm.sh 
-   - dnvm install 1.0.0-rc1-update1 -r mono
-   - dnvm list
-   - dnu restore 
+   - apt-get install -y --no-install-recommends dotnet-dev-1.0.0-rc2-002416   
+   - dotnet --info
+   - dotnet restore 
  script: 
-   - dnx -p Test/project.json test -parallel none
+   - dotnet test Test/project.json -parallel none

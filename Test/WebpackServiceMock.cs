@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNet.NodeServices;
+using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
 using Redouble.AspNet.Webpack;

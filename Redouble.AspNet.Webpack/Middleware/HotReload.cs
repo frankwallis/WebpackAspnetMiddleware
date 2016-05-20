@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -146,8 +146,8 @@ namespace Redouble.AspNet.Webpack
                 return "unknown";
             else if (context.Connection == null)
                 return "unknown";
-            else if (context.Connection.IsLocal)
-                return "localhost";
+            //else if (context.Connection.IsLocal)
+            //    return "localhost";
             else if (context.Connection.RemoteIpAddress == null)
                 return "unknown";
             else

@@ -1,32 +1,66 @@
 {
-  "version": "0.7.9",
-  "authors": ["Frank Wallis"],
-  "title": "Redouble.AspNet.Webpack",
-  "description": "Webpack development middleware for ASP.NET 5",
-  "userSecretsId": "aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba",
-  "tooling": {
-    "defaultNamespace": "Redouble.AspNet.Webpack"
-  },
-  "dependencies": {     
-    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final", 
-    "Microsoft.AspNet.Http": "1.0.0-rc1-final",    
-    "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-    "Microsoft.AspNet.NodeServices": "1.0.0-alpha6",
-    "Microsoft.Extensions.Logging": "1.0.0-rc1-final"
-  },
-  "frameworks": {
-    "dnx451": {},
-    "dnxcore50": {
-      "dependencies": {
-         "System.Threading.Timer": "4.0.1-beta-23516",
-         "System.Net.Sockets": "4.1.0-beta-23516"
-      }       
-    }
-  },
-  "resource": [
-    "Content/**/*"
-  ],
-  "tags": [ "webpack", "aspnet", "middleware", "dev", "server", "hot", "module", "reload", "swap", "hmr", "react"],
-  "projectUrl": "https://github.com/frankwallis/WebpackAspnetMiddleware",
-  "summary": "ASP.NET 5 middleware providing a development server and hot module reloading for applications built with Webpack"
+   "version": "0.8.0",
+   "authors": [
+      "Frank Wallis"
+   ],
+   "title": "Redouble.AspNet.Webpack",
+   "description": "Webpack development middleware for ASP.NET 5",
+   "userSecretsId": "aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba",
+   "tooling": {
+      "defaultNamespace": "Redouble.AspNet.Webpack"
+   },
+   "dependencies": {
+      "Microsoft.NETCore.App": {
+         "version": "1.0.0-rc2-*",
+         "type": "platform"
+      },
+      "Microsoft.AspNetCore.Hosting": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.Http": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000002",
+      "Microsoft.Extensions.Logging": "1.0.0-rc2-final"
+   },
+   "frameworks": {
+      "netcoreapp1.5": {
+         "imports": [
+            "dnxcore50",
+            "portable-net45+win8"
+         ],
+         "dependencies": {
+            "System.Threading.Timer": "4.0.1-rc2-24027",
+            "System.Net.Sockets": "4.1.0-rc2-24027"
+         }
+      }
+   },
+   "frameworks1": {
+      "dnx451": {},
+      "dnxcore50": {
+         "dependencies": {
+            "System.Threading.Timer": "4.0.1-beta-23516",
+            "System.Net.Sockets": "4.1.0-beta-23516"
+         }
+      }
+   },
+   "buildOptions": {
+      "embed": [
+         "Content/**/*"
+      ]
+   },
+   "packOptions": {
+      "tags": [
+         "webpack",
+         "aspnet",
+         "middleware",
+         "dev",
+         "server",
+         "hot",
+         "module",
+         "reload",
+         "swap",
+         "hmr",
+         "react"
+      ],
+      "projectUrl": "https://github.com/frankwallis/WebpackAspnetMiddleware",
+      "summary": "ASP.NET 5 middleware providing a development server and hot module reloading for applications built with Webpack"
+   }
 }

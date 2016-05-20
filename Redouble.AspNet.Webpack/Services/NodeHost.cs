@@ -4,10 +4,12 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using Microsoft.AspNet.NodeServices;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+
+using Microsoft.AspNetCore.NodeServices;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -50,8 +52,10 @@ namespace Redouble.AspNet.Webpack
                 this._client = new TcpClient();
 
                 await this._client.ConnectAsync("127.0.0.1", _portNumber);
-                this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                //this._client.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
+                //this._client.NoDelay = true;
+                this._client.NoDelay = true;
                 this._stream = this._client.GetStream();
 
                 Task.Factory.StartNew(this.ReceiveAll);

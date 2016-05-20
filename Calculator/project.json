@@ -1,0 +1,49 @@
+{
+   "version": "1.2.3",
+   "userSecretsId": "aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba",
+   "compilationOptions": {
+      "emitEntryPoint": true,
+      "preserveCompilationContext": true
+   },
+   "tooling": {
+      "defaultNamespace": "Calculator"
+   },
+   "dependencies": {
+      "Microsoft.NETCore.App": {
+         "version": "1.0.0-rc2-*",
+         "type": "platform"
+      },
+      "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.Razor": "1.0.0-rc2-final",
+      "Microsoft.Extensions.CodeGenerators.Mvc": "1.0.0-rc1-final",
+      "Microsoft.Extensions.Configuration.FileProviderExtensions": "1.0.0-rc1-final",
+      "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+      "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+      "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+      "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+      "Redouble.AspNet.Webpack": "0.7.9"
+   },
+   "frameworks": {
+      "netcoreapp1.5": {
+         "imports": [
+            "dnxcore50",
+            "portable-net45+win8"
+         ]
+      }
+   },
+   "exclude": [
+      "wwwroot",
+      "node_modules"
+   ],
+   "publishExclude": [
+      "**.user",
+      "**.vspscc"
+   ],
+   "scripts": {
+      "prepublish": [
+         "npm install"
+      ]
+   }
+}

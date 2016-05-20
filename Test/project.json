@@ -1,22 +1,30 @@
 {
-    "version": "1.0.0-*",
-    "description": "XUnit tests for Redouble.AspNet.Webpack",
-    "authors": [ "Frank Wallis" ],
-    "tooling": {
-        "defaultNamespace": "Redouble.AspNet.Webpack.Test"
-    },
-    "dependencies": {
-        "Redouble.AspNet.Webpack": "",
-        "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-        "Microsoft.AspNet.TestHost": "1.0.0-rc1-final",
-        "xunit": "2.1.0",
-        "xunit.runner.dnx": "2.1.0-rc1-build204"
-    },
-    "commands": {
-        "test": "xunit.runner.dnx"
-    },
-    "frameworks": {
-        "dnx451": { },
-        "dnxcore50": { }
-    }
+   "version": "1.0.0-*",
+   "description": "XUnit tests for Redouble.AspNet.Webpack",
+   "authors": [
+      "Frank Wallis"
+   ],
+   "tooling": {
+      "defaultNamespace": "Redouble.AspNet.Webpack.Test"
+   },
+   "dependencies": {
+      "Microsoft.NETCore.App": {
+         "version": "1.0.0-rc2-*",
+         "type": "platform"
+      },
+      "Redouble.AspNet.Webpack": "0.7.9",
+      "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.TestHost": "1.0.0-rc2-final",
+      "xunit": "2.1.0-rc2-*",
+      "dotnet-test-xunit": "1.0.0-rc2-*"
+   },
+   "testRunner": "xunit",
+   "frameworks": {
+      "netcoreapp1.5": {
+         "imports": [
+            "dnxcore50",
+            "portable-net45+win8"
+         ]
+      }
+   }
 }
