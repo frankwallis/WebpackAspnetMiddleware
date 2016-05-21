@@ -9,17 +9,24 @@ For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@0.8.x
 
 # Overview
 
-WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) NodeJS packages. 
+WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. 
 
-The middleware starts a NodeJS instance running webpack using the ASP.NET [NodeServices](https://github.com/aspnet/NodeServices.git) package. The development server middleware serves up the files produced by the webpack instance, and the hot reload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware.git) client library is used with no changes.
+The middleware starts a NodeJS instance using the [JavaScriptServices](https://github.com/aspnet/JavaScriptServices) package, and then sets up a two-way asynchronous communication channel with the node instance. This is used to run a webpack instance which generates bundled files and can notify WebpackAspnetMiddleware when files are regenerated.
+
+The development server middleware serves up the files produced by the webpack instance, and the hot reload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) client library is used with no changes.
 
 # Instructions
-1) Install the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package:
+1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your dependencies:
 ```
-  Windows> Install-Package Redouble.AspNet.Webpack
-```
-```
-  macbook> dnx install Redouble.AspNet.Webpack
+   "dependencies": {
+      "Microsoft.NETCore.App": {
+         "version": "1.0.0-rc2-*",
+         "type": "platform"
+      },
+      "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+      "Redouble.AspNet.Webpack": "0.8.1"
+   },
 ```
 
 2) Install the [webpack-aspnet-middleware](https://www.npmjs.com/package/webpack-aspnet-middleware) NodeJS package:
@@ -42,8 +49,8 @@ The middleware starts a NodeJS instance running webpack using the ASP.NET [NodeS
 
   public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
   {
-    app.UseWebpackDevServer();                   // necessary
-    app.UseWebpackHotReload();                   // optional
+    app.UseWebpackDevServer();               // necessary
+    app.UseWebpackHotReload();               // optional
 
     app.UseStaticFiles();
     app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
