@@ -3,8 +3,10 @@
  mono:
    - latest 
  install:
-   - apt-get install -y --no-install-recommends dotnet-dev-1.0.0-rc2-002416   
+   - sudo apt-get install -y --no-install-recommends dotnet-dev-1.0.0-rc2-002416   
    - dotnet --info
    - dotnet restore 
- script: 
+ script:
+   - dotnet build Redouble.AspNet.Webpack/project.json 
    - dotnet test Test/project.json -parallel none
+   - dotnet build Calculator/project.json
