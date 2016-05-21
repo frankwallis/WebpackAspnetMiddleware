@@ -25,7 +25,8 @@ namespace Redouble.AspNet.Webpack
         private TcpClient _client;
         private Stream _stream;
 
-        public NodeHost(string entryPointScript, string projectPath, string commandLineArguments = null) : base(entryPointScript, projectPath, commandLineArguments)
+        public NodeHost(string entryPointScript, string projectPath, string commandLineArguments = null) : 
+            base(entryPointScript, projectPath, commandLineArguments)
         {
         }
 
@@ -52,9 +53,8 @@ namespace Redouble.AspNet.Webpack
                 this._client = new TcpClient();
 
                 await this._client.ConnectAsync("127.0.0.1", _portNumber);
-                //this._client.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-                //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
                 this._client.NoDelay = true;
+                //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 this._stream = this._client.GetStream();
 
                 Task.Factory.StartNew(this.ReceiveAll);

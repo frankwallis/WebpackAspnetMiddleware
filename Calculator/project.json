@@ -19,7 +19,10 @@
       "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
       "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
       "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
-      "Redouble.AspNet.Webpack": "0.8.1"
+      "Redouble.AspNet.Webpack": {
+         "version": "0.8.1",
+         "target": "project"
+      }
    },
    "frameworks": {
       "netcoreapp1.5": {

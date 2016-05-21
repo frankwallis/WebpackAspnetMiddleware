@@ -1,6 +1,5 @@
 #!/bin/sh
 rm -rf bin
 dotnet restore
-dotnet build
-dotnet pack --configuration Release
-dotnet publish --configuration Release
+dotnet build Redouble.AspNet.Webpack
+dotnet pack Redouble.AspNet.Webpack --configuration Release

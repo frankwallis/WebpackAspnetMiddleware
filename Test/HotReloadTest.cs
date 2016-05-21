@@ -15,8 +15,7 @@ namespace Redouble.AspNet.Webpack.Test
     public class HotReloadTests
     {
         private const string DEFAULT_RESPONSE = "X-X default response X-X";
-
-
+        
         private TestServer CreateServer(IWebpackService webpackService)
         {
             var mockServiceDescriptor = new ServiceDescriptor(typeof(IWebpackService), webpackService);
@@ -62,6 +61,7 @@ namespace Redouble.AspNet.Webpack.Test
                     }
                 }
          */
+         
         [Fact]
         public async Task DevServer_EmitsHeartbeats()
         {

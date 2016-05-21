@@ -23,6 +23,7 @@ module.exports = function(emit) {
       }, {});
       
       var args = {
+         name: stats.name,
          time: stats.time,
          hash: stats.hash,
          warnings: stats.warnings || [],
