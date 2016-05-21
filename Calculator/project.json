@@ -20,12 +20,12 @@
       "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
       "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
       "Redouble.AspNet.Webpack": {
-         "version": "0.8.1",
+         "version": "0.8.4",
          "target": "project"
       }
    },
    "frameworks": {
-      "netcoreapp1.5": {
+      "netcoreapp1.0": {
          "imports": [
             "dnxcore50",
             "portable-net45+win8"

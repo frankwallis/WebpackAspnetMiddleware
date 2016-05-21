@@ -1,5 +1,5 @@
 {
-   "version": "0.8.3",
+   "version": "0.8.4",
    "authors": [
       "Frank Wallis"
    ],
@@ -21,7 +21,7 @@
       "Microsoft.Extensions.Logging": "1.0.0-rc2-final"
    },
    "frameworks": {
-      "netcoreapp1.5": {
+      "netcoreapp1.0": {
          "imports": [
             "dnxcore50",
             "portable-net45+win8"
