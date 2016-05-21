@@ -1,10 +1,6 @@
 {
-   "version": "1.2.3",
+   "version": "1.3.3",
    "userSecretsId": "aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba",
-   "compilationOptions": {
-      "emitEntryPoint": true,
-      "preserveCompilationContext": true
-   },
    "tooling": {
       "defaultNamespace": "Calculator"
    },
@@ -23,7 +19,7 @@
       "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
       "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
       "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
-      "Redouble.AspNet.Webpack": "0.7.9"
+      "Redouble.AspNet.Webpack": "0.8.1"
    },
    "frameworks": {
       "netcoreapp1.5": {
@@ -33,14 +29,22 @@
          ]
       }
    },
-   "exclude": [
-      "wwwroot",
-      "node_modules"
-   ],
-   "publishExclude": [
-      "**.user",
-      "**.vspscc"
-   ],
+   "buildOptions": {
+      "emitEntryPoint": true,
+      "preserveCompilationContext": true,
+      "compile": {
+         "exclude": [
+            "wwwroot",
+            "node_modules"
+         ]
+      }
+   },
+   "publishOptions": {
+      "exclude": [
+         "**.user",
+         "**.vspscc"
+      ]
+   },
    "scripts": {
       "prepublish": [
          "npm install"

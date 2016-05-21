@@ -4,8 +4,8 @@ ASP.NET 5 Middleware providing a development file server and hot module reloadin
 
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
-For aspnet@1.0.0-rc1, use WebpackAspnetMiddleware@0.7.9
-For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@0.8.x
+For aspnet@1.0.0-rc1, use WebpackAspnetMiddleware@0.7.9  
+For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@0.8.x  
 
 # Overview
 
@@ -35,7 +35,8 @@ The middleware starts a NodeJS instance running webpack using the ASP.NET [NodeS
     services.AddWebpack(
        configFile: "webpack.config.js",      // relative to project directory
        publicPath: "/webpack/",              // should match output.publicPath in your webpack config
-       webRoot: "./wwwroot"                  // relative to project directory
+       webRoot: "./wwwroot",                 // relative to project directory
+       logLevel: WebpackLogLevel.Normal      // None, ErrorsOnly, Minimal, Normal or Verbose
     );       
   }
 
