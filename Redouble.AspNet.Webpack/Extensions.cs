@@ -16,6 +16,7 @@ namespace Redouble.AspNet.Webpack
             options.PublicPath = publicPath;
             options.WebRoot = webRoot;
             options.LogLevel = logLevel;
+            options.Heartbeat = 10000;
 
             services.AddSingleton<WebpackOptions>(options);
             services.AddSingleton<IWebpackService, WebpackService>();

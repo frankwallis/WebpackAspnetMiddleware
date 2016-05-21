@@ -7,9 +7,7 @@
    - sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
    - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
    - sudo apt-get update
-   - sudo apt-cache search dotnet-dev
    - sudo apt-get install -y --no-install-recommends dotnet-dev-1.0.0-preview1-002702   
-   - dotnet --info
    - dotnet restore 
  script:
    - dotnet build Redouble.AspNet.Webpack/project.json 

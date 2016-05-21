@@ -10,9 +10,17 @@ namespace Redouble.AspNet.Webpack.Test
 {
     public class WebpackServiceMock : IWebpackService
     {
+        private WebpackOptions _options;
+
         public WebpackServiceMock()
         {
             _files = new Dictionary<string, IWebpackFile>();
+            _options = new WebpackOptions();
+            _options.ConfigFile = "webpack.config.js";
+            _options.PublicPath = "/webpack/";
+            _options.WebRoot = "wwwroot/";
+            _options.LogLevel = WebpackLogLevel.Normal;
+            _options.Heartbeat = 200;
         }
 
         private Dictionary<string, IWebpackFile> _files;
@@ -37,6 +45,12 @@ namespace Redouble.AspNet.Webpack.Test
                 return Task.FromResult(_files[filename]);
         }
 
+        public WebpackOptions Options {
+           get {
+              return this._options;
+           }
+        }
+        
         public void OnValid(JToken e)
         {
             Valid(this, e);

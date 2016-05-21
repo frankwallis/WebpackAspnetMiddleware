@@ -20,6 +20,8 @@ namespace Redouble.AspNet.Webpack
         public string WebRoot { get; set; }
         /* controls output from webpack */
         public WebpackLogLevel LogLevel { get; set; }
+        /* controls frequency of heartbeats useful for testing */
+        public int Heartbeat { get; set; }
     }
 
     public interface IWebpackService
@@ -28,6 +30,7 @@ namespace Redouble.AspNet.Webpack
         event EventHandler Invalid;
         Task<IWebpackFile> GetFile(string filename);
         bool IsWebpackFile(string filename);
+        WebpackOptions Options { get; }
     }
 
     public class WebpackService : IWebpackService
@@ -66,6 +69,10 @@ namespace Redouble.AspNet.Webpack
                 throw new NotSupportedException("Unrecognised webpack event [" + e.Name + "]");
         }
 
+        public WebpackOptions Options {
+           get { return _options; }
+        }
+        
         public async Task<IWebpackFile> GetFile(string filename)
         {
             var host = await _host;
