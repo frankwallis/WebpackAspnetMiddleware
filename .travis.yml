@@ -4,6 +4,8 @@
  mono:
    - latest 
  install:
+   - sudo apt-cache search dotnet-dev
+   - sudo apt-cache search dotnet
    - sudo apt-get install -y --no-install-recommends dotnet-dev-1.0.0-rc2-002416   
    - dotnet --info
    - dotnet restore 
