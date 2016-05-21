@@ -28,7 +28,7 @@ namespace Redouble.AspNet.Webpack
             _webpackService.Valid += WebpackValid;
             _webpackService.Invalid += WebpackInvalid;
 
-            _heartbeatTimer = new Timer(EmitHeartbeat, null, 0, 1000);
+            _heartbeatTimer = new Timer(EmitHeartbeat, null, 0, 10000);
         }
 
         public async Task Invoke(HttpContext context)
