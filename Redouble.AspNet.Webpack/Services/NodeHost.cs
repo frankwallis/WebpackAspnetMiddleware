@@ -54,7 +54,6 @@ namespace Redouble.AspNet.Webpack
                 await this._client.ConnectAsync("127.0.0.1", _portNumber);
                 //this._client.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
-                //this._client.NoDelay = true;
                 this._client.NoDelay = true;
                 this._stream = this._client.GetStream();
 
@@ -71,7 +70,7 @@ namespace Redouble.AspNet.Webpack
                     await this.Receive();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 this.OnDisconnected();
             }

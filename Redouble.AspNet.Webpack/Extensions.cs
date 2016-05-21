@@ -8,17 +8,16 @@ namespace Redouble.AspNet.Webpack
         public static void AddWebpack(this IServiceCollection services,
            string configFile = "webpack.config.js",
            string publicPath = "/",
-           string webRoot = "wwwroot")
+           string webRoot = "wwwroot",
+           WebpackLogLevel logLevel = WebpackLogLevel.Normal)
         {
             var options = new WebpackOptions();
             options.ConfigFile = configFile;
             options.PublicPath = publicPath;
             options.WebRoot = webRoot;
+            options.LogLevel = logLevel;
 
-            // rc2
-            //services.AddSingleton<WebpackOptions>(options);
-            //services.AddSingleton<IWebpackService, WebpackService>();
-            services.AddSingleton<WebpackOptions>((sp) => options);
+            services.AddSingleton<WebpackOptions>(options);
             services.AddSingleton<IWebpackService, WebpackService>();
         }
 

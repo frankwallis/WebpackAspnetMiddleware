@@ -15,7 +15,7 @@ namespace Calculator
         public static void Main(string[] args)
         {
             var application = new WebHostBuilder()
-               .UseContentRoot(Directory.GetCurrentDirectory())
+                  .UseContentRoot(Directory.GetCurrentDirectory())
                   //.UseConfiguration(WebApplicationConfiguration.GetDefault(args))
                   //.UseIISIntegration()
                   .UseKestrel()
@@ -43,7 +43,7 @@ namespace Calculator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddWebpack(configFile: "webpack.config.js", publicPath: "/webpack/");
+            services.AddWebpack(configFile: "webpack.config.js", publicPath: "/webpack/", logLevel: WebpackLogLevel.Normal);
             services.AddMvc();
         }
 

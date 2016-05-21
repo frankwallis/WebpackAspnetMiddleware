@@ -16,7 +16,7 @@ module.exports = {
    },
    plugins: [
       new WebpackNotifierPlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(), new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.optimize.OccurenceOrderPlugin(), 
       new webpack.HotModuleReplacementPlugin()
    ],
    module: {

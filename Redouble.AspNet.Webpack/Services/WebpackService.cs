@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
+    public enum WebpackLogLevel { None, ErrorsOnly, Minimal, Normal, Verbose }
+    
     public class WebpackOptions
     {
         /* path of webpack configuration file */
@@ -16,6 +18,8 @@ namespace Redouble.AspNet.Webpack
         public string PublicPath { get; set; }
         /* location of web root directory relative to project directory */
         public string WebRoot { get; set; }
+        /* controls output from webpack */
+        public WebpackLogLevel LogLevel { get; set; }
     }
 
     public interface IWebpackService
@@ -48,7 +52,7 @@ namespace Redouble.AspNet.Webpack
         {
             var host = NodeHost.Create("webpack-aspnet-middleware", basePath);
             host.Emit += WebpackEmit;
-            await host.Invoke("start", Path.Combine(basePath, _options.ConfigFile), null);
+            await host.Invoke("start", Path.Combine(basePath, _options.ConfigFile), _options.LogLevel);
             return host;
         }
 

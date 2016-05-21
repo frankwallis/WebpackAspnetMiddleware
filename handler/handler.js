@@ -34,7 +34,7 @@ module.exports = function(emit) {
       process.nextTick(flushPending);
    }
    
-   function start(configPath, opts, callback) {
+   function start(configPath, logLevelEnum, callback) {
       if (instance) return callback(new Error("webpack is already started"))
       
       var webpackConfig = require(configPath);
@@ -48,7 +48,13 @@ module.exports = function(emit) {
 
       compiler.outputFileSystem = fs;
 
-      instance = compiler.watch({}, function(err) {
+      var levels = ['none', 'errors-only', 'minimal', 'normal', 'verbose'];
+      var logLevel = levels[logLevelEnum] || 'normal';
+
+      instance = compiler.watch({}, function(err, stats) {
+         var msg = stats.toString(logLevel);
+         if (msg) console.log(msg);
+                              
          instance.fs = fs;
          callback(err);        
       });  
