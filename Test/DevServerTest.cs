@@ -76,5 +76,23 @@ namespace Redouble.AspNet.Webpack.Test
                 Assert.Equal(DEFAULT_RESPONSE, await response.Content.ReadAsStringAsync());
             }
         }
+
+        [Fact]
+        public async Task DevServer_Returns404WhenWebpackFileNotFound()
+        {
+            // Arrange
+            var mock = new WebpackServiceMock();
+            mock.AddNonExistantFile("/public/bundle.js");
+
+            using (var server = CreateServer(mock))
+            {
+                // Act
+                // Actual request.
+                var response = await server.CreateRequest("/public/bundle.js").SendAsync("GET");
+
+                // Assert
+                Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
     }
 }

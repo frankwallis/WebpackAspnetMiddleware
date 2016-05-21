@@ -24,9 +24,17 @@ namespace Redouble.AspNet.Webpack.Test
             return result;
         }
 
+        public void AddNonExistantFile(string filename)
+        {
+            _files.Add(filename, null);
+        }
+
         public Task<IWebpackFile> GetFile(string filename)
         {
-            return Task.FromResult(_files[filename]);
+            if (_files[filename] == null)
+                return Task.FromException(new Exception("File not found")) as Task<IWebpackFile>;
+            else
+                return Task.FromResult(_files[filename]);
         }
 
         public void OnValid(JToken e)

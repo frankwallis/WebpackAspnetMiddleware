@@ -38,14 +38,20 @@ namespace Redouble.AspNet.Webpack
             _logger.LogDebug("Handling request for {0}", context.Request.Path);
 
             /* get the file details */
-            var file = await _webpackService.GetFile(context.Request.Path);
+            try {
+               var file = await _webpackService.GetFile(context.Request.Path);
 
-            /* set some headers */
-            context.Response.ContentLength = file.Contents.Length;
-            context.Response.ContentType = file.MimeType;
+               /* set some headers */
+               context.Response.ContentLength = file.Contents.Length;
+               context.Response.ContentType = file.MimeType;
 
-            /* write contents to response body */
-            await context.Response.WriteAsync(file.Contents);
+               /* write contents to response body */
+               await context.Response.WriteAsync(file.Contents);
+            }
+            catch {
+               _logger.LogWarning("File {0} not found", context.Request.Path);
+               context.Response.StatusCode = 404;
+            }
         }
     }
 }
