@@ -5,15 +5,15 @@ ASP.NET 5 Middleware providing a development file server and hot module reloadin
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
 For aspnet@1.0.0-rc1, use WebpackAspnetMiddleware@0.7.9  
-For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@0.8.x  
+For aspnet@1.0.0-rc2, use WebpackAspnetMiddleware@^0.8.1  
 
 # Overview
 
-WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. 
+WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. It come in 3 parts: The WebpackService, the DevServer middleware and the HotReload middleware.
 
-The middleware starts a NodeJS instance using the [JavaScriptServices](https://github.com/aspnet/JavaScriptServices) package, and then sets up a two-way asynchronous communication channel with the node instance. This is used to run a webpack instance which generates bundled files and can notify WebpackAspnetMiddleware when files are regenerated.
+The WebpackService starts NodeJS using the [JavaScriptServices](https://github.com/aspnet/JavaScriptServices) package, and then sets up a two-way asynchronous communication channel with the node instance. It comes with an accompanying npm package [webpack-aspnet-middleware](https://www.npmjs.com/package/webpack-aspnet-middleware) which starts webpack to generate the bundles, and notifies the WebpackService when files are emitted.
 
-The development server middleware serves up the files produced by the webpack instance, and the hot reload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) client library is used with no changes.
+The DevServer middleware serves up the files produced by the webpack instance, and the HotReload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) client library is used with no changes.
 
 # Instructions
 1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your dependencies:
