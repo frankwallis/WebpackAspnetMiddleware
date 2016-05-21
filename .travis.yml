@@ -6,7 +6,7 @@
  install:
    - sudo apt-cache search dotnet-dev
    - sudo apt-cache search dotnet
-   - sudo apt-get install -y --no-install-recommends dotnet-dev-1.0.0-rc2-002416   
+   - sudo apt-get install -y --no-install-recommends dotnet-dev-1.0.0-preview1-002702   
    - dotnet --info
    - dotnet restore 
  script:
