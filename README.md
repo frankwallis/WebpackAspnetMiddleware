@@ -42,8 +42,8 @@ The middleware starts a NodeJS instance running webpack using the ASP.NET [NodeS
 
   public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
   {
-    app.UseWebpackDevServer();                            // necessary
-    app.UseWebpackHotReload();                            // optional
+    app.UseWebpackDevServer();                   // necessary
+    app.UseWebpackHotReload();                   // optional
 
     app.UseStaticFiles();
     app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
@@ -66,7 +66,7 @@ b) Add the hot reload client to the ```entry``` array:
 ```
 5) Start ASP.NET
 ```
-  macbook> dnx web
+  macbook> dotnet run
 ```
 
 # Samples
