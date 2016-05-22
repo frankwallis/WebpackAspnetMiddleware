@@ -1,11 +1,11 @@
 # Webpack Aspnet Middleware
 
-ASP.NET 5 Middleware providing a development file server and hot module reloading for applications built with [Webpack](https://github.com/webpack/webpack)
+Development file server and hot module reloading middleware for applications built with [Webpack](https://github.com/webpack/webpack) and running in ASP.NET 5
 
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
-For **aspnet@1.0.0-rc1**, use **WebpackAspnetMiddleware@0.7.9**  
-For **aspnet@1.0.0-rc2**, use **WebpackAspnetMiddleware@^0.8.1**  
+For **aspnet@1.0.0-rc1**, use WebpackAspnetMiddleware@0.7.9  
+For **aspnet@1.0.0-rc2**, use WebpackAspnetMiddleware@0.8.x  
 
 # Overview
 
@@ -38,22 +38,22 @@ The DevServer middleware serves up the files produced by the webpack instance, a
 ```cs
   public void ConfigureServices(IServiceCollection services)
   {    
-    /* these are the default values */   
-    services.AddWebpack(
-       configFile: "webpack.config.js",      // relative to project directory
-       publicPath: "/webpack/",              // should match output.publicPath in your webpack config
-       webRoot: "./wwwroot",                 // relative to project directory
-       logLevel: WebpackLogLevel.Normal      // None, ErrorsOnly, Minimal, Normal or Verbose
-    );       
+     /* these are the default values */   
+     services.AddWebpack(
+        configFile: "webpack.config.js",      // relative to project directory
+        publicPath: "/webpack/",              // should match output.publicPath in your webpack config
+        webRoot: "./wwwroot",                 // relative to project directory
+        logLevel: WebpackLogLevel.Normal      // None, ErrorsOnly, Minimal, Normal or Verbose
+     );       
   }
 
   public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
   {
-    app.UseWebpackDevServer();               // necessary
-    app.UseWebpackHotReload();               // optional
+     app.UseWebpackDevServer();               // necessary
+     app.UseWebpackHotReload();               // optional
 
-    app.UseStaticFiles();
-    app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
+     app.UseStaticFiles();
+     app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
   }
 ```
 
@@ -62,16 +62,16 @@ The DevServer middleware serves up the files produced by the webpack instance, a
 a) Add these to the ```plugins``` array:
 ```js
   plugins: [
-      new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin()
+     new webpack.optimize.OccurenceOrderPlugin(),
+     new webpack.HotModuleReplacementPlugin(),
+     new webpack.NoErrorsPlugin()
   ]
 ```
 b) Add the hot reload client to the ```entry``` array:
 ```js
   entry: [ 'webpack-aspnet-middleware/client', './index' ],
 ```
-5) Start ASP.NET
+5) Start ASP.NET:
 ```sh
   macbook> dotnet run
 ```
