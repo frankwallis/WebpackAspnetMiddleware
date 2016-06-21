@@ -1,6 +1,6 @@
 # Webpack Aspnet Middleware
 
-Development file server and hot module reloading middleware for applications built with [Webpack](https://github.com/webpack/webpack) and running in ASP.NET 5
+Development file-server and hot-reload middleware for [ASP.NET](https://github.com/aspnet) applications built with [Webpack](https://github.com/webpack/webpack)
 
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
