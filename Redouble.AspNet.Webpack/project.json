@@ -1,5 +1,5 @@
 {
-   "version": "0.9.0",
+   "version": "1.0.0",
    "authors": [
       "Frank Wallis"
    ],
@@ -10,11 +10,11 @@
       "defaultNamespace": "Redouble.AspNet.Webpack"
    },
    "dependencies": {
-      "Microsoft.AspNetCore.Hosting": "1.0.0-rc2-final",
-      "Microsoft.AspNetCore.Http": "1.0.0-rc2-final",
-      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
-      "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000004",
-      "Microsoft.Extensions.Logging": "1.0.0-rc2-final"
+      "Microsoft.AspNetCore.Hosting": "1.0.0",
+      "Microsoft.AspNetCore.Http": "1.0.0",
+      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+      "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000006",
+      "Microsoft.Extensions.Logging": "1.0.0"
    },
    "frameworks": {
       "netstandard1.3": {
@@ -23,8 +23,8 @@
             "portable-net45+win8"
          ],
          "dependencies": {
-            "System.Threading.Timer": "4.0.1-rc2-24027",
-            "System.Net.Sockets": "4.1.0-rc2-24027"
+            "System.Threading.Timer": "4.0.1",
+            "System.Net.Sockets": "4.1.0"
          }
       },
       "net451": {

@@ -4,7 +4,7 @@ var webpack = require('webpack');
 
 module.exports = {
    context: path.join(__dirname, 'Scripts'),
-   entry: ['webpack-aspnet-middleware/client?timeout=15000&reload=true', './index'],
+   entry: ['webpack-aspnet-middleware/client', './index'],
    devtool: 'source-map',
    resolve: {
       extensions: ['', '.ts', '.tsx', '.js', '.jsx']
@@ -16,7 +16,6 @@ module.exports = {
    },
    plugins: [
       new WebpackNotifierPlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(), 
       new webpack.HotModuleReplacementPlugin()
    ],
    module: {
