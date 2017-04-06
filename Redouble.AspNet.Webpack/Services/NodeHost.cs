@@ -2,14 +2,17 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 using Microsoft.AspNetCore.NodeServices;
+using Microsoft.AspNetCore.NodeServices.HostingModels;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -25,31 +28,39 @@ namespace Redouble.AspNet.Webpack
         private TcpClient _client;
         private Stream _stream;
 
-        public NodeHost(string entryPointScript, string projectPath, string commandLineArguments = null) : 
-            base(entryPointScript, projectPath, commandLineArguments)
+        public NodeHost(string entryPointScript, string projectPath, ILogger logger, string commandLineArguments = null) :
+            base(entryPointScript, projectPath,
+            null,
+            commandLineArguments,
+            logger,
+            null,
+            1000,
+            false,
+            0)
         {
         }
 
-        public static NodeHost Create(string handlerFile, string projectPath)
+        public static NodeHost Create(string handlerFile, string projectPath, ILogger logger)
         {
             var hostScript = EmbeddedResourceReader.Read(typeof(NodeHost), "/Content/node-host.js");
-            return new NodeHost(hostScript, projectPath, "\"" + handlerFile + "\"");
+            return new NodeHost(hostScript, projectPath, logger, "\"" + handlerFile + "\"");
         }
 
-        public static NodeHost CreateFromScript(string handlerScript, string projectPath)
+        public static NodeHost CreateFromScript(string handlerScript, string projectPath, ILogger logger)
         {
             var handlerFile = new StringAsTempFile(handlerScript);
-            var result = NodeHost.Create(handlerFile.FileName, projectPath);
+            var result = NodeHost.Create(handlerFile.FileName, projectPath, logger);
             result._handlerFile = handlerFile;
             return result;
         }
 
         private async Task EnsureClient()
         {
-            await this.EnsureReady();
-
             if (this._client == null)
             {
+                var source = new CancellationTokenSource();
+                await InvokeExportAsync<Object>(source.Token, "", "");
+
                 this._client = new TcpClient();
 
                 await this._client.ConnectAsync("127.0.0.1", _portNumber);
@@ -158,24 +169,27 @@ namespace Redouble.AspNet.Webpack
             var msgStr = JsonConvert.SerializeObject(msg, jsonSerializerSettings);
             var buffer = new byte[msgStr.Length + 4];
             var header = BitConverter.GetBytes(msgStr.Length);
-            header.CopyTo(buffer, 0);            
+            header.CopyTo(buffer, 0);
             System.Text.Encoding.UTF8.GetBytes(msgStr, 0, msgStr.Length, buffer, 4);
-            
+
             await this._stream.WriteAsync(buffer, 0, buffer.Length);
             await this._stream.FlushAsync();
 
             return await pending.Deferred.Task;
         }
 
-        public new async Task<T> Invoke<T>(string methodName, params object[] args)
+        public async Task<T> Invoke<T>(string methodName, params object[] args)
         {
             var jtoken = await Invoke(methodName, args);
             return jtoken.ToObject<T>();
         }
 
-        public async override Task<T> Invoke<T>(NodeInvocationInfo invocationInfo)
+        protected override Task<T> InvokeExportAsync<T>(
+            NodeInvocationInfo invocationInfo,
+            CancellationToken cancellationToken)
         {
-            throw new NotImplementedException("Use overloaded Invoke method instead");
+            return Task.FromResult<T>(default(T));
+            //throw new NotImplementedException("Use overloaded Invoke method instead");
         }
 
         public event EventHandler<EmitEventArgs> Emit;

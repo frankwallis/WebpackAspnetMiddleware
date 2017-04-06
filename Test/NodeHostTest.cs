@@ -1,23 +1,25 @@
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
-using Redouble.AspNet.Webpack;
 
 namespace Redouble.AspNet.Webpack.Test
 {
     public class NodeHostTests
     {
+        private ILogger GetLogger()
+        {
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole();
+            return loggerFactory.CreateLogger("Test");
+        }
+
         [Fact]
         public async Task NodeHost_CallsMethod()
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 'result1'); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 var result = await host.Invoke<string>("method1", new object[0]);
                 Assert.Equal("result1", result);
@@ -29,7 +31,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(arg1, arg2, callback) { callback(null, arg1 + arg2); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 var result = await host.Invoke<string>("method1", new object[] { "quick", "fox" });
                 Assert.Equal("quickfox", result.ToString());
@@ -41,7 +43,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback('an error occurred', null); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 try
                 {
@@ -60,7 +62,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(new Error('an error occurred'), null); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 try
                 {
@@ -79,7 +81,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 42); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 try
                 {
@@ -98,7 +100,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";
 
-            using (var host = NodeHost.CreateFromScript(script, ""))
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
             {
                 string emitEvt = "";
                 dynamic emitArgs = null;
@@ -116,6 +118,5 @@ namespace Redouble.AspNet.Webpack.Test
                 //Assert.Equal("args1", emitArgs.arg1.toString());
             }
         }
-
     }
 }

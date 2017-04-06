@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -59,7 +58,7 @@ namespace Redouble.AspNet.Webpack
                so the connection is kept open.
             */
             await client.CompletionSource.Task;
-            
+
             /*
                This prevents HttpFrame.WriteChunkedResponseSuffix from throwing
                an EPIPE error with stacktrace due to the socket being disconnected
@@ -154,12 +153,14 @@ namespace Redouble.AspNet.Webpack
                 return context.Connection.RemoteIpAddress.ToString();
         }
     }
-    
-    class QuietException : Exception {
-       public QuietException(string message): base(message) {}
-       
-       public override string ToString() {
-          return Message;
-       }
+
+    class QuietException : Exception
+    {
+        public QuietException(string message) : base(message) { }
+
+        public override string ToString()
+        {
+            return Message;
+        }
     }
 }

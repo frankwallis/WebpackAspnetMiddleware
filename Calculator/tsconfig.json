@@ -3,10 +3,10 @@
     "target": "es6",
     "module": "commonjs",
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",
+    "moduleResolution": "node"
   },
   "files": [
-    "Scripts/typings/tsd.d.ts",
     "Scripts/calculator-store.ts",
     "Scripts/calculator.tsx",
     "Scripts/index.tsx"

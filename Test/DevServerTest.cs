@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Redouble.AspNet.Webpack;
 
 namespace Redouble.AspNet.Webpack.Test
 {

@@ -2,14 +2,13 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
     public enum WebpackLogLevel { None, ErrorsOnly, Minimal, Normal, Verbose }
-    
+
     public class WebpackOptions
     {
         /* path of webpack configuration file */
@@ -53,7 +52,7 @@ namespace Redouble.AspNet.Webpack
 
         private async Task<NodeHost> CreateHost(string basePath)
         {
-            var host = NodeHost.Create("webpack-aspnet-middleware", basePath);
+            var host = NodeHost.Create("webpack-aspnet-middleware", basePath, _logger);
             host.Emit += WebpackEmit;
             await host.Invoke("start", Path.Combine(basePath, _options.ConfigFile), _options.LogLevel);
             return host;
@@ -69,10 +68,11 @@ namespace Redouble.AspNet.Webpack
                 throw new NotSupportedException("Unrecognised webpack event [" + e.Name + "]");
         }
 
-        public WebpackOptions Options {
-           get { return _options; }
+        public WebpackOptions Options
+        {
+            get { return _options; }
         }
-        
+
         public async Task<IWebpackFile> GetFile(string filename)
         {
             var host = await _host;

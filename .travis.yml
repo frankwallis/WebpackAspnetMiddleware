@@ -10,6 +10,6 @@
    - sudo ln -s /opt/dotnet/dotnet /usr/local/bin
    - dotnet restore 
  script:
-   - dotnet build Redouble.AspNet.Webpack/project.json 
-   - dotnet test Test/project.json -parallel none
-   - dotnet build Calculator/project.json
+   - dotnet build Redouble.AspNet.Webpack/Redouble.AspNet.Webpack.csproj
+   - dotnet test Test/Test.csproj -parallel none
+   - dotnet build Calculator/Calculator.csproj

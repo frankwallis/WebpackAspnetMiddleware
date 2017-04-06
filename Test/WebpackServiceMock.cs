@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.NodeServices;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
-using Redouble.AspNet.Webpack;
 
 namespace Redouble.AspNet.Webpack.Test
 {
@@ -45,12 +42,14 @@ namespace Redouble.AspNet.Webpack.Test
                 return Task.FromResult(_files[filename]);
         }
 
-        public WebpackOptions Options {
-           get {
-              return this._options;
-           }
+        public WebpackOptions Options
+        {
+            get
+            {
+                return this._options;
+            }
         }
-        
+
         public void OnValid(JToken e)
         {
             Valid(this, e);

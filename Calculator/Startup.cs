@@ -1,11 +1,9 @@
 using System.IO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Redouble.AspNet.Webpack;
 
 namespace Calculator
@@ -24,16 +22,16 @@ namespace Calculator
 
             application.Run();
         }
-            
+
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
             System.Console.WriteLine(env.ContentRootPath);
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath);
-                //.AddEnvironmentVariables();
-                //.AddJsonFile("appsettings.json")
-                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+            //.AddEnvironmentVariables();
+            //.AddJsonFile("appsettings.json")
+            //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             Configuration = builder.Build();
         }
@@ -52,7 +50,7 @@ namespace Calculator
         {
             //loggerFactory.AddConsole(Microsoft.Extensions.Logging.LogLevel.Debug);
             loggerFactory.AddConsole(Microsoft.Extensions.Logging.LogLevel.Information);
-            
+
             app.UseWebpackDevServer();
             app.UseWebpackHotReload();
 

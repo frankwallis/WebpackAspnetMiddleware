@@ -8,20 +8,22 @@
     "watch": "webpack -w"
   },
   "dependencies": {
-    "react": "^15.2.0",
-    "react-dom": "^15.2.0"
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0"
   },
   "devDependencies": {
-    "babel-loader": "^6.2.1",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
+    "@types/react": "^15.0.21",
+    "@types/react-dom": "^0.14.23",
+    "babel-loader": "^6.4.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
     "babel-preset-react-hmre": "^1.0.1",
-    "css-loader": "^0.23.1",
-    "style-loader": "^0.13.0",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
-    "webpack": "^2.1.0-beta.15",
+    "css-loader": "^0.28.0",
+    "style-loader": "^0.16.0",
+    "ts-loader": "^2.0.3",
+    "typescript": "^2.2.2",
+    "webpack": "^2.3.3",
     "webpack-aspnet-middleware": "^0.7.6",
-    "webpack-notifier": "^1.3.0"
+    "webpack-notifier": "^1.5.0"
   }
 }
