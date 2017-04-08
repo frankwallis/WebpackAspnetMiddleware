@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Webpack development middleware for ASP.NET 5</Description>
     <AssemblyTitle>Redouble.AspNet.Webpack</AssemblyTitle>
+    <Version>1.1.0</Version>
     <Authors>Frank Wallis</Authors>
+    <Description>Webpack development middleware for ASP.NET 5</Description>
     <TargetFrameworks>netstandard1.6</TargetFrameworks>
     <AssemblyName>Redouble.AspNet.Webpack</AssemblyName>
     <PackageId>Redouble.AspNet.Webpack</PackageId>
@@ -20,7 +21,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
   </ItemGroup>

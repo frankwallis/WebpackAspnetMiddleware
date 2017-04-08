@@ -4,9 +4,6 @@ Development file-server and hot-reload middleware for [ASP.NET](https://github.c
 
 [![build status](https://secure.travis-ci.org/frankwallis/WebpackAspnetMiddleware.png?branch=master)](http://travis-ci.org/frankwallis/WebpackAspnetMiddleware)
 
-For **aspnet@1.0.0-rc1**, use WebpackAspnetMiddleware@0.7.9  
-For **aspnet@1.0.0-rc2**, use WebpackAspnetMiddleware@0.8.x  
-
 # Overview
 
 WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. It come in 3 parts: The **WebpackService**, the **DevServer** middleware and the **HotReload** middleware.
@@ -16,17 +13,13 @@ The WebpackService starts NodeJS using the [JavaScriptServices](https://github.c
 The DevServer middleware serves up the files produced by the webpack instance, and the HotReload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) client library is used with no changes.
 
 # Instructions
-1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your dependencies:
-```js
-   "dependencies": {
-      "Microsoft.NETCore.App": {
-         "version": "1.0.0-rc2-*",
-         "type": "platform"
-      },
-      "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
-      "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
-      "Redouble.AspNet.Webpack": "0.8.1"
-   },
+1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your project dependencies:
+```xml
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
+    <PackageReference Include="Redouble.AspNet.Webpack" Version="1.0.0" />
+    ...
 ```
 
 2) Install the [webpack-aspnet-middleware](https://www.npmjs.com/package/webpack-aspnet-middleware) NodeJS package:
@@ -73,17 +66,16 @@ b) Add the hot reload client to the ```entry``` array:
 ```
 5) Start ASP.NET:
 ```sh
-  macbook> dotnet run
+  $ dotnet run
 ```
 
 # Samples
 
 ```sh
 git clone https://github.com/frankwallis/WebpackAspnetMiddleware
-cd WebpackAspnetMiddleware
-dotnet restore
-cd Calculator
+cd WebpackAspnetMiddleware/Calculator
 npm install
+dotnet restore
 dotnet run
 ```
 Open up [localhost:5000](http://localhost:5000) in your browser and then try editing ```samples/Calculator/Scripts/calculator.tsx```.
