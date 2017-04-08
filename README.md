@@ -18,7 +18,7 @@ The DevServer middleware serves up all the files produced by the webpack instanc
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
-    <PackageReference Include="Redouble.AspNet.Webpack" Version="1.1.0" />
+    <PackageReference Include="Redouble.AspNet.Webpack" Version="1.1.2" />
     ...
 ```
 

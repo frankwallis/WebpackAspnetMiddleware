@@ -42,7 +42,7 @@ namespace Redouble.AspNet.Webpack
                 var file = await _webpackService.GetFile(context.Request.Path);
 
                 /* set some headers */
-                context.Response.ContentLength = file.Contents.Length;
+                context.Response.ContentLength = System.Text.Encoding.UTF8.GetByteCount(file.Contents);
                 context.Response.ContentType = file.MimeType;
 
                 /* write contents to response body */

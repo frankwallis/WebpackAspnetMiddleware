@@ -58,6 +58,28 @@ namespace Redouble.AspNet.Webpack.Test
         }
 
         [Fact]
+        public async Task DevServer_SetsContentLengthInBytes()
+        {
+            // Arrange
+            var mock = new WebpackServiceMock();
+            mock.AddFile("/public/bundle.js", "[’]", "js"); // unicode
+
+            using (var server = CreateServer(mock))
+            {
+                // Act
+                // Actual request.
+                var response = await server.CreateRequest("/public/bundle.js").SendAsync("GET");
+
+                // Assert
+                response.EnsureSuccessStatusCode();
+                Assert.Equal("[’]", await response.Content.ReadAsStringAsync());
+
+                Assert.Equal(2, response.Content.Headers.Count());
+                Assert.Equal("5", response.Content.Headers.GetValues("Content-Length").FirstOrDefault());
+            }
+        }
+
+        [Fact]
         public async Task DevServer_IgnoresNonWebpackFiles()
         {
             // Arrange
