@@ -17,11 +17,11 @@
 	font-size: 2rem;
 	width: 2em;
 	height: 2em;
+	outline: none;
 }
 
 .adder-button-clear {
 	background: orangered; 
-   
 }
 
 .adder-button-add {

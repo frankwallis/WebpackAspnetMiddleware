@@ -1,22 +1,24 @@
-export class CalculatorStore {
-    constructor() {
-        this.clear()
+export interface CalculatorState {
+    operand: number
+    total: number
+}
+
+export function clear() {
+    return {
+        operand: 0.0,
+        total: 0.0
     }
+}
 
-    public operand: number
-    public total: number
-
-    public input(digit) {
-        this.operand = (this.operand * 10) + digit
+export function sum(state: CalculatorState) {
+    return {
+        total: state.total + state.operand,
+        operand: 0.0
     }
+}
 
-    public add() {
-        this.total = this.total + this.operand
-        this.operand = 0.0
-    }
-
-    public clear() {
-        this.total = 0.0
-        this.operand = 0.0
+export function input(digit: number) {
+    return (state: CalculatorState) => {
+        return { operand: (state.operand * 10) + digit }
     }
 }

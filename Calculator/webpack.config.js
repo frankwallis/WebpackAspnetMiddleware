@@ -20,7 +20,7 @@ module.exports = {
     ],
     module: {
         rules: [
-            { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'], exclude: /node_modules/ },
+            { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader?transpileOnly=true'], exclude: /node_modules/ },
             { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     }

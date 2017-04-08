@@ -9,7 +9,7 @@ const render = () => ReactDOM.render(<AppContainer><Calculator /></AppContainer>
 render()
 
 if (module.hot) {
-    module.hot.accept('./calculator', render);
+    module.hot.accept('./calculator', render)
 }
 
 declare const module: any
