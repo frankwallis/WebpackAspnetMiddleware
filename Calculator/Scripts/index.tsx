@@ -1,15 +1,15 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { AppContainer } from 'react-hot-loader'
 import { Calculator } from './calculator'
 import './calculator.css'
 
-var container = document.getElementById('main')
-ReactDOM.render(<Calculator />, container)
+const main = document.getElementById('main')
+const render = () => ReactDOM.render(<AppContainer><Calculator /></AppContainer>, main)
+render()
 
 if (module.hot) {
-    module.hot.accept(() => {
-        ReactDOM.render(<Calculator />, container)
-    });
+    module.hot.accept('./calculator', render);
 }
 
-declare var module: any
+declare const module: any

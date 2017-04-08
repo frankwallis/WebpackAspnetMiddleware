@@ -1,10 +1,10 @@
 ﻿var path = require('path');
-var WebpackNotifierPlugin = require('webpack-notifier');
 var webpack = require('webpack');
+var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
     context: path.join(__dirname, 'Scripts'),
-    entry: ['webpack-aspnet-middleware/client', './index'],
+    entry: ['react-hot-loader/patch', 'webpack-aspnet-middleware/client', './index'],
     devtool: 'source-map',
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
@@ -19,21 +19,9 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin()
     ],
     module: {
-        loaders: [
-            { test: /\.css$/, loader: 'style-loader!css-loader' },
-            {
-                test: /\.tsx?$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    'presets': [
-                        'es2015',
-                        'react',
-                        'react-hmre'
-                    ]
-                }
-            },
-            { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ }
+        rules: [
+            { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'], exclude: /node_modules/ },
+            { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     }
 };
