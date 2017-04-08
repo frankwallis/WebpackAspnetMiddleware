@@ -96,6 +96,30 @@ namespace Redouble.AspNet.Webpack.Test
         }
 
         [Fact]
+        public async Task NodeHost_HandlesUnicodeCharactersFromNode()
+        {
+            var script = "module.exports = function() { return { method1: function(callback) { callback(null, '[’]'); }}}";
+
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
+            {
+                var result = await host.Invoke<string>("method1");
+                Assert.Equal("[’]", result);
+            }
+        }
+
+        [Fact]
+        public async Task NodeHost_HandlesUnicodeCharactersToNode()
+        {
+            var script = "module.exports = function() { return { method1: function(str, callback) { callback(null, str === '[’]'); }}}";
+
+            using (var host = NodeHost.CreateFromScript(script, "", GetLogger()))
+            {
+                var result = await host.Invoke<bool>("method1", "[’]");
+                Assert.True(result);
+            }
+        }
+
+        [Fact]
         public async Task NodeHost_RaisesEvents()
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";

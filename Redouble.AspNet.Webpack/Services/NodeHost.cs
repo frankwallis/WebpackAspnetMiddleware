@@ -81,8 +81,15 @@ namespace Redouble.AspNet.Webpack
                     await this.Receive();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                var pendingTasks = _pendingTasks.ToArray();
+                _pendingTasks.Clear();
+                foreach (var pending in pendingTasks)
+                {
+                    pending.Deferred.SetException(ex);
+                }
+
                 this.OnDisconnected();
             }
         }
@@ -167,8 +174,9 @@ namespace Redouble.AspNet.Webpack
             this._pendingTasks.Add(pending);
 
             var msgStr = JsonConvert.SerializeObject(msg, jsonSerializerSettings);
-            var buffer = new byte[msgStr.Length + 4];
-            var header = BitConverter.GetBytes(msgStr.Length);
+            var msgLength = System.Text.Encoding.UTF8.GetByteCount(msgStr);
+            var buffer = new byte[msgLength + 4];
+            var header = BitConverter.GetBytes(msgLength);
             header.CopyTo(buffer, 0);
             System.Text.Encoding.UTF8.GetBytes(msgStr, 0, msgStr.Length, buffer, 4);
 
