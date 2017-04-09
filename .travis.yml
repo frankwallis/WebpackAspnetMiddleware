@@ -11,8 +11,9 @@
     dotnet: 1.0.1
     mono: none
  install:
+   - ulimit -n 512
    - dotnet restore 
  script:
-   - dotnet build
    - ulimit -n 512
+   - dotnet build
    - dotnet test Test/Test.csproj
