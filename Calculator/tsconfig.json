@@ -1,10 +1,13 @@
 ﻿{
   "compilerOptions": {
     "target": "es5",
-    "module": "es2015",
+    "module": "commonjs",
     "sourceMap": true,
     "jsx": "react",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": [
+      "webpack-env"
+    ]
   },
   "files": [
     "Scripts/calculator-store.ts",
