@@ -34,7 +34,7 @@ namespace Redouble.AspNet.Webpack
             commandLineArguments,
             logger,
             null,
-            1000,
+            5000,
             false,
             0)
         {
