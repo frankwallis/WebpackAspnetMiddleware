@@ -1,4 +1,3 @@
- dist: trusty
  language: csharp
  sudo: required
  mono: none 
@@ -6,6 +5,6 @@
  install:
    - dotnet restore 
  script:
-   - dotnet build Redouble.AspNet.Webpack/Redouble.AspNet.Webpack.csproj
-   - dotnet test Test/Test.csproj -parallel none
-   - dotnet build Calculator/Calculator.csproj
+   - dotnet build
+   - ulimit -n 512
+   - dotnet test Test/Test.csproj
