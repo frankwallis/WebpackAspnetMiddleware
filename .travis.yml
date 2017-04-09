@@ -1,7 +1,12 @@
  language: csharp
- sudo: required
- mono: none 
- dotnet: 1.0.1   
+ matrix:
+  include:
+  - os: linux
+    dist: trusty # Ubuntu 14.04
+    sudo: required
+    dotnet: 1.0.1
+    mono: none
+    env: DOTNETCORE=1
  install:
    - dotnet restore 
  script:
