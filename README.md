@@ -55,9 +55,9 @@ The DevServer middleware serves up all the files produced by the webpack instanc
 a) Add these to the ```plugins``` array:
 ```js
   plugins: [
-     new webpack.optimize.OccurenceOrderPlugin(),
      new webpack.HotModuleReplacementPlugin(),
-     new webpack.NoErrorsPlugin()
+     new webpack.NoEmitOnErrorsPlugin(),
+     new webpack.NamedModulesPlugin(),
   ]
 ```
 b) Add the hot reload client to the ```entry``` array:

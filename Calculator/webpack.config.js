@@ -16,7 +16,9 @@ module.exports = {
     },
     plugins: [
         new WebpackNotifierPlugin(),
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.NamedModulesPlugin(),
     ],
     module: {
         rules: [
