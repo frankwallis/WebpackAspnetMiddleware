@@ -1,13 +1,9 @@
  dist: trusty
- language: CSharp
+ language: csharp
  sudo: required
- mono:
-   - latest 
+ mono: none 
+ dotnet: 1.0.1   
  install:
-   - sudo apt-get install curl libunwind8 gettext
-   - curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=809130
-   - sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
-   - sudo ln -s /opt/dotnet/dotnet /usr/local/bin
    - dotnet restore 
  script:
    - dotnet build Redouble.AspNet.Webpack/Redouble.AspNet.Webpack.csproj
