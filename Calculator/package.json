@@ -8,19 +8,19 @@
     "watch": "webpack -w"
   },
   "dependencies": {
-    "react": "^15.5.0",
-    "react-dom": "^15.5.0"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
-    "@types/react": "^15.0.21",
-    "@types/react-dom": "^0.14.23",
+    "@types/react": "^15.0.30",
+    "@types/react-dom": "^15.5.0",
     "@types/webpack-env": "^1.13.0",
-    "css-loader": "^0.28.0",
-    "react-hot-loader": "^3.0.0-beta.6",
-    "style-loader": "^0.16.0",
-    "ts-loader": "^2.0.3",
-    "typescript": "^2.2.2",
-    "webpack": "^2.3.3",
+    "css-loader": "^0.28.4",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "style-loader": "^0.18.2",
+    "ts-loader": "^2.2.0",
+    "typescript": "^2.4.0",
+    "webpack": "^3.0.0",
     "webpack-aspnet-middleware": "^0.7.6",
     "webpack-notifier": "^1.5.0"
   }
