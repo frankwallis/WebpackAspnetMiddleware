@@ -17,7 +17,7 @@ namespace Redouble.AspNet.Webpack.Test
             _options.PublicPath = "/webpack/";
             _options.WebRoot = "wwwroot/";
             _options.LogLevel = WebpackLogLevel.Normal;
-            _options.Heartbeat = 500;
+            _options.Heartbeat = 1000;
         }
 
         private Dictionary<string, IWebpackFile> _files;
