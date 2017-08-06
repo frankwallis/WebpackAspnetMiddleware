@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
@@ -38,23 +39,28 @@ namespace Redouble.AspNet.Webpack
         private ILogger _logger;
         private WebpackOptions _options;
 
-        public WebpackService(IHostingEnvironment environment,
+        public WebpackService(
+            IHostingEnvironment environment,
             ILogger<WebpackService> logger,
+            IApplicationLifetime lifetime,
             WebpackOptions options)
         {
             _environment = environment;
             _logger = logger;
             _options = options;
-            _host = CreateHost(_environment.ContentRootPath);
+            _host = CreateHost(_environment, lifetime);
         }
 
         private Task<NodeHost> _host;
 
-        private async Task<NodeHost> CreateHost(string basePath)
+        private async Task<NodeHost> CreateHost(IHostingEnvironment environment, IApplicationLifetime lifetime)
         {
-            var host = NodeHost.Create("webpack-aspnet-middleware", basePath, _logger);
+            var environmentVariables = new Dictionary<string, string>();
+            environmentVariables["NODE_ENV"] = environment.IsDevelopment() ? "development" : "production";
+
+            var host = NodeHost.Create("webpack-aspnet-middleware", environment.ContentRootPath, lifetime.ApplicationStopping, _logger, environmentVariables);
             host.Emit += WebpackEmit;
-            await host.Invoke("start", Path.Combine(basePath, _options.ConfigFile), _options.LogLevel);
+            await host.Invoke("start", Path.Combine(environment.ContentRootPath, _options.ConfigFile), _options.LogLevel);
             return host;
         }
 

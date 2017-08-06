@@ -28,28 +28,36 @@ namespace Redouble.AspNet.Webpack
         private TcpClient _client;
         private Stream _stream;
 
-        public NodeHost(string entryPointScript, string projectPath, ILogger logger, string commandLineArguments = null) :
-            base(entryPointScript, projectPath,
+        public NodeHost(
+            string entryPointScript, 
+            string projectPath,
+            string commandLineArguments,
+            CancellationToken applicationStopping,
+            ILogger logger,
+            IDictionary<string, string> environmentVars
+        ) : base (
+            entryPointScript,
+            projectPath,
             null,
             commandLineArguments,
+            applicationStopping,
             logger,
-            null,
+            environmentVars,
             5000,
             false,
-            0)
-        {
-        }
+            0
+        ) {}
 
-        public static NodeHost Create(string handlerFile, string projectPath, ILogger logger)
+        public static NodeHost Create(string handlerFile, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
         {
             var hostScript = EmbeddedResourceReader.Read(typeof(NodeHost), "/Content/node-host.js");
-            return new NodeHost(hostScript, projectPath, logger, "\"" + handlerFile + "\"");
+            return new NodeHost(hostScript, projectPath, "\"" + handlerFile + "\"", applicationStopping, logger, environmentVars);
         }
 
-        public static NodeHost CreateFromScript(string handlerScript, string projectPath, ILogger logger)
+        public static NodeHost CreateFromScript(string handlerScript, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
         {
-            var handlerFile = new StringAsTempFile(handlerScript);
-            var result = NodeHost.Create(handlerFile.FileName, projectPath, logger);
+            var handlerFile = new StringAsTempFile(handlerScript, applicationStopping);
+            var result = NodeHost.Create(handlerFile.FileName, projectPath, applicationStopping, logger, environmentVars);
             result._handlerFile = handlerFile;
             return result;
         }

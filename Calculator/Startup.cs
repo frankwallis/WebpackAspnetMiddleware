@@ -26,10 +26,9 @@ namespace Calculator
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
-            System.Console.WriteLine(env.ContentRootPath);
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath);
-            //.AddEnvironmentVariables();
+                .SetBasePath(env.ContentRootPath)
+                .AddEnvironmentVariables();
             //.AddJsonFile("appsettings.json")
             //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 

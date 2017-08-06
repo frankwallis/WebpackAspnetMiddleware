@@ -6,19 +6,19 @@ Development file-server and hot-reload middleware for [ASP.NET](https://github.c
 
 # Overview
 
-WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware.git) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. It come in 3 parts: The **WebpackService**, the **DevServer** middleware and the **HotReload** middleware.
+WebpackAspnetMiddleware is an ASP.NET clone of the popular [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) and [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) NodeJS packages. It come in 3 parts: The **WebpackService**, the **DevServer** middleware and the **HotReload** middleware.
 
-The WebpackService starts NodeJS using the [JavaScriptServices](https://github.com/aspnet/JavaScriptServices) package, and then sets up a two-way asynchronous communication channel with the node instance. It communicates with webpack using an accompanying npm package [webpack-aspnet-middleware](https://www.npmjs.com/package/webpack-aspnet-middleware) which starts webpack to generate the bundles, and notifies the WebpackService when files are emitted.
+The WebpackService starts NodeJS using the [JavaScriptServices](https://github.com/aspnet/JavaScriptServices) package, and communicates with webpack using an accompanying npm package [webpack-aspnet-middleware](https://www.npmjs.com/package/webpack-aspnet-middleware). This package sets up a two-way asynchronous communication channel which enables the WebpackService to send commands directly to webpack and receive notifications when new files are emitted.
 
 The DevServer middleware serves up all the files produced by the webpack instance, and the HotReload middleware notifies the client when files change. In the browser the [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) client library is used with no changes.
+
 
 # Instructions
 1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your project dependencies:
 ```xml
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
-    <PackageReference Include="Redouble.AspNet.Webpack" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Redouble.AspNet.Webpack" Version="2.0.0" />
     ...
 ```
 
@@ -69,7 +69,7 @@ b) Add the hot reload client to the ```entry``` array:
   $ dotnet run
 ```
 
-# Samples
+# Example
 
 ```sh
 git clone https://github.com/frankwallis/WebpackAspnetMiddleware

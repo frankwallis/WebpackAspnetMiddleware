@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -26,11 +27,9 @@ namespace Redouble.AspNet.Webpack.Test
                                await context.Response.WriteAsync(DEFAULT_RESPONSE);
                            });
                        })
-               .ConfigureServices(services =>
-                       {
-                           services.AddLogging();
-                           services.Add(mockServiceDescriptor);
-                       });
+               .ConfigureLogging((hostingContext, factory) => factory.AddConsole())
+               .ConfigureServices(services => services.Add(mockServiceDescriptor));
+
             return new TestServer(builder);
         }
 
