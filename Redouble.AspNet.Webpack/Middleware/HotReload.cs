@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
@@ -45,25 +46,30 @@ namespace Redouble.AspNet.Webpack
                 return;
             }
 
+
+            if (context.Request.Headers["Accept"] != "text/event-stream")
+            {
+                await _next(context);
+                return;
+            }
+
             /* set some headers to force the response to auto-chunk and keep-alive */
             context.Response.Headers["Cache-Control"] = "no-cache, no-transform";
             context.Response.Headers["Connection"] = "keep-alive";
             context.Response.ContentType = "text/event-stream;charset=utf-8";
+            context.Response.Body.Flush();
 
             /* register the client to receive events */
             var client = RegisterClient(context);
 
-            /* 
-               This only completes when the client disconnects,
-               so the connection is kept open.
-            */
-            await client.CompletionSource.Task;
-
-            /*
-               This prevents HttpFrame.WriteChunkedResponseSuffix from throwing
-               an EPIPE error with stacktrace due to the socket being disconnected
-            */
-            throw new QuietException("Redouble.AspNet.Webpack.HotReload: client disconnected");
+            try {
+                /* This only completes when the client disconnects, so the connection is kept open. */
+                await client.CompletionSource.Task;
+            }
+            finally {
+                /* session has ended */
+                UnregisterClient(client);
+            }
         }
 
         private List<HmrClient> _clients = new List<HmrClient>();
@@ -76,12 +82,10 @@ namespace Redouble.AspNet.Webpack
             return client;
         }
 
-        private void UnregisterClient(HttpContext context)
+        private void UnregisterClient(HmrClient client)
         {
-            var client = _clients.SingleOrDefault(hc => hc.Context == context);
             _clients.Remove(client);
             _logger.LogInformation("Client [{0}] disconnected", client.Description);
-            client.CompletionSource.SetResult(null);
         }
 
         private void WebpackValid(object sender, JToken e)
@@ -103,7 +107,7 @@ namespace Redouble.AspNet.Webpack
             Emit(HEARTBEAT);
         }
 
-        private async void Emit(string payload)
+        private void Emit(string payload)
         {
             payload = String.Format("data: {0}\r\n\r\n", payload);
             var buffer = System.Text.Encoding.UTF8.GetBytes(payload);
@@ -118,10 +122,10 @@ namespace Redouble.AspNet.Webpack
                     await client.Context.Response.Body.WriteAsync(buffer, 0, buffer.Length);
                     await client.Context.Response.Body.FlushAsync();
                 }
-                catch (Exception ex) // change to IOException in rc2
+                catch (IOException ex)
                 {
                     _logger.LogDebug("Write failed: ", ex);
-                    UnregisterClient(client.Context);
+                    client.CompletionSource.TrySetResult(null);
                 }
             });
         }
@@ -132,8 +136,9 @@ namespace Redouble.AspNet.Webpack
         public HmrClient(HttpContext context)
         {
             Context = context;
-            CompletionSource = new TaskCompletionSource<object>();
             Description = GetClientAddress(context);
+            CompletionSource = new TaskCompletionSource<object>();
+            context.RequestAborted.Register(taskCompletionSource => ((TaskCompletionSource<object>) taskCompletionSource).TrySetResult(null), CompletionSource);
         }
         public TaskCompletionSource<object> CompletionSource { get; private set; }
         public HttpContext Context { get; private set; }
@@ -145,22 +150,12 @@ namespace Redouble.AspNet.Webpack
                 return "unknown";
             else if (context.Connection == null)
                 return "unknown";
-            //else if (context.Connection.IsLocal)
+            // else if (context.Connection.IsLocal)
             //    return "localhost";
             else if (context.Connection.RemoteIpAddress == null)
                 return "unknown";
             else
                 return context.Connection.RemoteIpAddress.ToString();
-        }
-    }
-
-    class QuietException : Exception
-    {
-        public QuietException(string message) : base(message) { }
-
-        public override string ToString()
-        {
-            return Message;
         }
     }
 }
