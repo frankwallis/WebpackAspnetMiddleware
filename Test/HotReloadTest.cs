@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -33,32 +34,33 @@ namespace Redouble.AspNet.Webpack.Test
 
             return new TestServer(builder);
         }
+/*
+        [Fact]        
+        public async Task DevServer_SetsChunkedEncoding()
+        {
+            // Arrange
+            var mock = new WebpackServiceMock();
 
-        /*
-                [Fact]        
-                public async Task DevServer_SetsChunkedEncoding()
+            using (var server = CreateServer(mock))
+            {      
+                using (var client = server.CreateClient())
                 {
-                   // Arrange
-                   var mock = new WebpackServiceMock();
+                    client.DefaultRequestHeaders.Add("Accept", "text/event-stream");
+                    var response = await client.GetAsync("/__webpack_hmr");
 
-                    using (var server = CreateServer(mock))
-                    {      
-                       using (var client = server.CreateClient())
-                       {
-                        // Assert
-                        response.EnsureSuccessStatusCode();
-                        Assert.Equal(2, response.Headers.Count());
-                        Assert.True(response.Headers.CacheControl.NoTransform);
-                        Assert.True(response.Headers.CacheControl.NoCache);
-                        Assert.True(response.Headers.Connection.Contains("keep-alive"));
-                        Assert.Null(response.Headers.TransferEncodingChunked);
-                        Assert.Null(response.Headers.ConnectionClose);                
-                        Assert.Null(response.Content.Headers.ContentLength);
-                       }         
-                    }
-                }
-         */
-
+                    // Assert
+                    response.EnsureSuccessStatusCode();
+                    Assert.Equal(2, response.Headers.Count());
+                    Assert.True(response.Headers.CacheControl.NoTransform);
+                    Assert.True(response.Headers.CacheControl.NoCache);
+                    Assert.True(response.Headers.Connection.Contains("keep-alive"));
+                    Assert.Null(response.Headers.TransferEncodingChunked);
+                    Assert.Null(response.Headers.ConnectionClose);                
+                    Assert.Null(response.Content.Headers.ContentLength);
+                }         
+            }
+        }
+*/
         [Fact]
         public async Task DevServer_EmitsHeartbeats()
         {
@@ -70,6 +72,7 @@ namespace Redouble.AspNet.Webpack.Test
                 using (var client = server.CreateClient())
                 {
                     // Act
+                    client.DefaultRequestHeaders.Add("Accept", "text/event-stream");
                     var stream = await client.GetStreamAsync("/__webpack_hmr");
 
                     var buffer = new byte[256];
@@ -97,6 +100,7 @@ namespace Redouble.AspNet.Webpack.Test
                 using (var client = server.CreateClient())
                 {
                     // Act
+                    client.DefaultRequestHeaders.Add("Accept", "text/event-stream");                    
                     var stream = await client.GetStreamAsync("/__webpack_hmr");
 
                     var buffer = new byte[256];
