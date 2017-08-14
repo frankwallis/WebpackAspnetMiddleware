@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <AssemblyTitle>Redouble.AspNet.Webpack</AssemblyTitle>
-    <Version>2.0.0-preview2-final</Version>
+    <Version>2.0.0</Version>
     <Authors>Frank Wallis</Authors>
     <Description>Webpack development middleware for ASP.NET 5</Description>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>Redouble.AspNet.Webpack</AssemblyName>
     <PackageId>Redouble.AspNet.Webpack</PackageId>
-    <UserSecretsId>aspnet5-hot_demo-b1fdb5a5-47e0-4b4a-9863-f1af5b576aba</UserSecretsId>
     <PackageTags>webpack;aspnet;middleware;dev;server;hot;module;reload;swap;hmr;react</PackageTags>
     <PackageProjectUrl>https://github.com/frankwallis/WebpackAspnetMiddleware</PackageProjectUrl>
   </PropertyGroup>
@@ -18,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
