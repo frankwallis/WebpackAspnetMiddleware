@@ -1,8 +1,8 @@
 module.exports = function (emit) {
 
    var webpack = require('webpack');
-   var MemoryFileSystem = require("memory-fs");
-   var mime = require("mime");
+   var MemoryFileSystem = require('memory-fs');
+   var mime = require('mime');
 
    var instance = null;
    var valid = false;
@@ -40,16 +40,19 @@ module.exports = function (emit) {
    }
 
    function start(configPath, logLevelEnum, callback) {
-      if (instance) return callback(new Error("webpack is already started"))
+      if (instance) return callback(new Error('webpack is already started'))
 
       var webpackConfig = require(configPath);
+      if (typeof webpackConfig === 'function')
+         webpackConfig = webpackConfig(process.env.NODE_ENV);
+
       var compiler = webpack(webpackConfig);
       var fs = new MemoryFileSystem();
 
-      compiler.plugin("invalid", onInvalid);
-      compiler.plugin("watch-run", onInvalidAsync);
-      compiler.plugin("run", onInvalid);
-      compiler.plugin("done", onValid);
+      compiler.plugin('invalid', onInvalid);
+      compiler.plugin('watch-run', onInvalidAsync);
+      compiler.plugin('run', onInvalid);
+      compiler.plugin('done', onValid);
 
       compiler.outputFileSystem = fs;
 
@@ -80,7 +83,7 @@ module.exports = function (emit) {
    }
 
    function getFile(filename, callback) {
-      if (!instance) return callback(new Error("webpack is not started"));
+      if (!instance) return callback(new Error('webpack is not started'));
 
       runOnValid(function () {
          var mimeType = mime.lookup(filename);
@@ -92,7 +95,7 @@ module.exports = function (emit) {
    }
 
    function stop(callback) {
-      if (!instance) return callback(new Error("webpack is not started"));
+      if (!instance) return callback(new Error('webpack is not started'));
       instance.close(callback);
    }
 
