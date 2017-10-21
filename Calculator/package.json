@@ -23,7 +23,7 @@
     "typescript": "^2.5.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.0.0",
-    "webpack-aspnet-middleware": "^2.1.1",
+    "webpack-aspnet-middleware": "^2.2.0",
     "webpack-notifier": "^1.5.0"
   }
 }

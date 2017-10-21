@@ -139,7 +139,7 @@ namespace Redouble.AspNet.Webpack.Test
         }
 
         [Fact]
-        public async Task NodeHost_RaisesEvents()
+        public async Task NodeHost_RaisesEventsWithObjectArgs()
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";
 
@@ -158,10 +158,33 @@ namespace Redouble.AspNet.Webpack.Test
                 Assert.Equal((Int64)42, result);
 
                 Assert.Equal("event1", emitEvt);
-                //Assert.Equal("args1", emitArgs.arg1.toString());
+                Assert.Equal("arg1", emitArgs.arg1.ToString());
             }
         }
 
+        [Fact]
+        public async Task NodeHost_RaisesEventsWithStringArgs()
+        {
+            var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', 'arg1'); callback(null, 42); } }}";
+
+            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            {
+                string emitEvt = "";
+                dynamic emitArgs = null;
+
+                host.Emit += (sender, e) =>
+                {
+                    emitEvt = e.Name;
+                    emitArgs = e.Args;
+                };
+
+                var result = await host.Invoke<Int64>("start", new object[0]);
+                Assert.Equal((Int64)42, result);
+
+                Assert.Equal("event1", emitEvt);
+                Assert.Equal("arg1", emitArgs.ToString());
+            }
+        }
 
         [Fact]
         public async Task NodeHost_SetsEnvironmentVariables()

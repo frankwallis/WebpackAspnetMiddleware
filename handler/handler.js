@@ -39,6 +39,13 @@ module.exports = function (emit) {
       process.nextTick(flushPending);
    }
 
+   function onLogStats(stats, logLevel) {
+      var options = stats.constructor.presetToOptions(logLevel);
+      options.colors = true;
+      var msg = stats.toString(options);
+      if (msg) emit('log', msg);   
+   }
+
    function start(configPath, logLevelEnum, callback) {
       if (instance) return callback(new Error('webpack is already started'))
 
@@ -46,23 +53,23 @@ module.exports = function (emit) {
       if (typeof webpackConfig === 'function')
          webpackConfig = webpackConfig(process.env.NODE_ENV);
 
+      var levels = ['none', 'errors-only', 'minimal', 'normal', 'verbose'];
+      var logLevel = levels[logLevelEnum] || 'normal';
+
       var compiler = webpack(webpackConfig);
       var fs = new MemoryFileSystem();
 
       compiler.plugin('invalid', onInvalid);
       compiler.plugin('watch-run', onInvalidAsync);
       compiler.plugin('run', onInvalid);
-      compiler.plugin('done', onValid);
+      compiler.plugin('done', function (stats) {
+         onLogStats(stats, logLevel);
+         onValid(stats);
+      });
 
       compiler.outputFileSystem = fs;
 
-      var levels = ['none', 'errors-only', 'minimal', 'normal', 'verbose'];
-      var logLevel = levels[logLevelEnum] || 'normal';
-
       instance = compiler.watch({}, function (err, stats) {
-         var msg = stats.toString(logLevel);
-         if (msg) console.log(msg);
-
          instance.fs = fs;
          callback(err);
       });

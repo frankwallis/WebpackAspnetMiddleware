@@ -46,7 +46,8 @@ namespace Redouble.AspNet.Webpack
             5000,
             false,
             0
-        ) {}
+        ) {
+        }
 
         public static NodeHost Create(string handlerFile, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
         {
@@ -142,7 +143,10 @@ namespace Redouble.AspNet.Webpack
 
         private void HandleEvent(string method, object args)
         {
-            this.OnEmit(method, args as JToken);
+            if (args is JToken)
+                this.OnEmit(method, args as JToken);
+            else
+                this.OnEmit(method, new JValue(args));            
         }
 
         private void HandleResponse(int id, object args)
@@ -205,7 +209,6 @@ namespace Redouble.AspNet.Webpack
             CancellationToken cancellationToken)
         {
             return Task.FromResult<T>(default(T));
-            //throw new NotImplementedException("Use overloaded Invoke method instead");
         }
 
         public event EventHandler<EmitEventArgs> Emit;

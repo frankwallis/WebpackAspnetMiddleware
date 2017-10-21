@@ -70,6 +70,8 @@ namespace Redouble.AspNet.Webpack
                 OnInvalid();
             else if (e.Name == "valid")
                 OnValid(e.Args);
+            else if (e.Name == "log")
+                OnLog(e.Args);
             else
                 throw new NotSupportedException("Unrecognised webpack event [" + e.Name + "]");
         }
@@ -109,6 +111,11 @@ namespace Redouble.AspNet.Webpack
             {
                 Invalid(this, EventArgs.Empty);
             }
+        }
+
+        public void OnLog(JToken args)
+        {
+            _logger.LogInformation(args.ToString());
         }
 
         public event EventHandler<JToken> Valid;
