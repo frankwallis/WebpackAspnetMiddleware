@@ -1,6 +1,6 @@
 {
   "name": "webpack-aspnet-middleware",
-  "version": "0.7.7",
+  "version": "2.1.0",
   "description": "Webpack Middleware for ASP.NET 5",
   "main": "handler.js",
   "homepage": "https://github.com/frankwallis/WebpackAspnetMiddleware",
@@ -16,18 +16,18 @@
     "server",
     "middleware",
     "bundle",
-    "react",
-    "angular",
-    "jquery"
+    "dotnet",
+    ".NET",
+    "C#"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/frankwallis/WebpackAspnetMiddleware.git"
   },  
   "dependencies": {
-    "memory-fs": "^0.3.0",
-    "mime": "^1.3.4",
-    "webpack-hot-middleware": "^2.10.0"
+    "memory-fs": "^0.4.1",
+    "mime": "^1.4.1",
+    "webpack-hot-middleware": "^2.20.0"
   },
   "scripts": {},
   "license": "MIT"

@@ -127,6 +127,18 @@ namespace Redouble.AspNet.Webpack.Test
         }
 
         [Fact]
+        public async Task NodeHost_ConvertsFromBas64StringToByteArray()
+        {
+            var script = "module.exports = function() { return { method1: function(str, callback) { callback(null, Buffer.from(str).toString('base64')) }}}";
+
+            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            {
+                var result = await host.Invoke<byte[]>("method1", "BinaryData");
+                Assert.Equal(result, System.Text.Encoding.UTF8.GetBytes("BinaryData"));
+            }
+        }
+
+        [Fact]
         public async Task NodeHost_RaisesEvents()
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";

@@ -117,19 +117,19 @@ namespace Redouble.AspNet.Webpack
 
     public interface IWebpackFile
     {
-        string Contents { get; }
+        byte[] Contents { get; }
         string MimeType { get; }
     }
 
     public class WebpackFile : IWebpackFile
     {
-        public WebpackFile(string contents, string mimeType)
+        public WebpackFile(byte[] contents, string mimeType)
         {
             Contents = contents;
             MimeType = mimeType;
         }
 
-        public string Contents { get; private set; }
+        public byte[] Contents { get; private set; }
         public string MimeType { get; private set; }
     }
 }

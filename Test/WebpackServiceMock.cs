@@ -24,7 +24,7 @@ namespace Redouble.AspNet.Webpack.Test
 
         public IWebpackFile AddFile(string filename, string contents, string mimeType)
         {
-            var result = new WebpackFile(contents, mimeType);
+            var result = new WebpackFile(System.Text.Encoding.UTF8.GetBytes(contents), mimeType);
             _files.Add(filename, result);
             return result;
         }

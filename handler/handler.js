@@ -85,7 +85,7 @@ module.exports = function (emit) {
       runOnValid(function () {
          var mimeType = mime.lookup(filename);
 
-         instance.fs.readFile(filename, 'utf8', function (err, contents) {
+         instance.fs.readFile(filename, 'base64', function (err, contents) {
             callback(err, { contents: contents, mimeType: mimeType });
          });
       });
