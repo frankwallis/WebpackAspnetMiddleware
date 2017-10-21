@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as CalculatorStore from './calculator-store'
+import './calculator.css'
 
 export class Calculator extends React.Component<any, CalculatorStore.CalculatorState> {
     constructor(props) {
