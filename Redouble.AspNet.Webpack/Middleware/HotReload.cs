@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json.Linq;
 
 namespace Redouble.AspNet.Webpack
@@ -16,13 +17,16 @@ namespace Redouble.AspNet.Webpack
         private IWebpackService _webpackService;
         private ILogger _logger;
         private Timer _heartbeatTimer;
+        private IApplicationLifetime _lifetime;
 
         public HotReload(RequestDelegate next,
             IWebpackService webpackService,
+            IApplicationLifetime lifetime,
             ILogger<HotReload> logger)
         {
             _next = next;
             _logger = logger;
+            _lifetime = lifetime;
 
             _webpackService = webpackService;
             _webpackService.Valid += WebpackValid;
@@ -63,8 +67,8 @@ namespace Redouble.AspNet.Webpack
             var client = RegisterClient(context);
 
             try {
-                /* This only completes when the client disconnects, so the connection is kept open. */
-                await client.CompletionSource.Task;
+                /* This will complete when the client disconnects, or the application is being shutdown */
+                await Task.WhenAny(client.ClientDisconnected.Task, _lifetime.ApplicationStopping.CompletionSource().Task);
             }
             finally {
                 /* session has ended */
@@ -125,7 +129,7 @@ namespace Redouble.AspNet.Webpack
                 catch (IOException ex)
                 {
                     _logger.LogDebug("Write failed: ", ex);
-                    client.CompletionSource.TrySetResult(null);
+                    client.ClientDisconnected.TrySetResult(null);
                 }
             });
         }
@@ -137,10 +141,9 @@ namespace Redouble.AspNet.Webpack
         {
             Context = context;
             Description = GetClientAddress(context);
-            CompletionSource = new TaskCompletionSource<object>();
-            context.RequestAborted.Register(taskCompletionSource => ((TaskCompletionSource<object>) taskCompletionSource).TrySetResult(null), CompletionSource);
+            ClientDisconnected = context.RequestAborted.CompletionSource();
         }
-        public TaskCompletionSource<object> CompletionSource { get; private set; }
+        public TaskCompletionSource<object> ClientDisconnected { get; private set; }
         public HttpContext Context { get; private set; }
         public string Description { get; }
 
@@ -156,6 +159,14 @@ namespace Redouble.AspNet.Webpack
                 return "unknown";
             else
                 return context.Connection.RemoteIpAddress.ToString();
+        }
+    }
+
+    internal static class ExtensionMethods {
+        internal static TaskCompletionSource<object> CompletionSource(this CancellationToken tokenSource) {
+            var taskCompletionSource = new TaskCompletionSource<object>();
+            tokenSource.Register(completionSource => ((TaskCompletionSource<object>) completionSource).TrySetResult(null), taskCompletionSource);
+            return taskCompletionSource;
         }
     }
 }

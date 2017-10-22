@@ -16,21 +16,22 @@ namespace Redouble.AspNet.Webpack.Test
     {
         private const string DEFAULT_RESPONSE = "X-X default response X-X";
 
-        private TestServer CreateServer(IWebpackService webpackService)
+        private TestServer CreateServer(IWebpackService mockWebpackService)
         {
-            var mockServiceDescriptor = new ServiceDescriptor(typeof(IWebpackService), webpackService);
-
             var builder = new WebHostBuilder()
                .Configure(app =>
-                       {
-                           app.UseWebpackHotReload();
-                           app.Run(async context =>
-                           {
-                               await context.Response.WriteAsync(DEFAULT_RESPONSE);
-                           });
-                       })
+                {
+                    app.UseWebpackHotReload();
+                    app.Run(async context =>
+                    {
+                        await context.Response.WriteAsync(DEFAULT_RESPONSE);
+                    });
+                })
                .ConfigureLogging((hostingContext, factory) => factory.AddConsole())
-               .ConfigureServices(services => services.Add(mockServiceDescriptor));
+               .ConfigureServices(services =>
+               {
+                   services.Add(new ServiceDescriptor(typeof(IWebpackService), mockWebpackService));
+               });
 
             return new TestServer(builder);
         }
@@ -62,16 +63,14 @@ namespace Redouble.AspNet.Webpack.Test
         }
 */
         [Fact]
-        public async Task DevServer_EmitsHeartbeats()
+        public async Task HotReload_EmitsHeartbeats()
         {
-            // Arrange
             var mock = new WebpackServiceMock();
 
             using (var server = CreateServer(mock))
             {
                 using (var client = server.CreateClient())
                 {
-                    // Act
                     client.DefaultRequestHeaders.Add("Accept", "text/event-stream");
                     var stream = await client.GetStreamAsync("/__webpack_hmr");
 
@@ -89,9 +88,8 @@ namespace Redouble.AspNet.Webpack.Test
         }
 
         [Fact]
-        public async Task DevServer_EmitsOnValid()
+        public async Task HotReload_EmitsOnValid()
         {
-            // Arrange
             var mock = new WebpackServiceMock();
             mock.AddFile("/public/bundle.js", "bundle.js", "js");
 
@@ -99,7 +97,6 @@ namespace Redouble.AspNet.Webpack.Test
             {
                 using (var client = server.CreateClient())
                 {
-                    // Act
                     client.DefaultRequestHeaders.Add("Accept", "text/event-stream");                    
                     var stream = await client.GetStreamAsync("/__webpack_hmr");
 
@@ -114,6 +111,32 @@ namespace Redouble.AspNet.Webpack.Test
                     var byteCount2 = await stream.ReadAsync(buffer, 0, 256);
                     Assert.Equal(28, byteCount2);
                     Assert.Equal("data: {\"action\":\"built\"}\r\n\r\n", System.Text.Encoding.UTF8.GetString(buffer).Substring(0, byteCount2));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task HotReload_DisconnectsOnShutdown()
+        {
+            var mockService = new WebpackServiceMock();
+            mockService.AddFile("/public/bundle.js", "bundle.js", "js");
+
+            using (var server = CreateServer(mockService))
+            {
+                using (var client = server.CreateClient())
+                {
+                    client.DefaultRequestHeaders.Add("Accept", "text/event-stream");                    
+                    var stream = await client.GetStreamAsync("/__webpack_hmr");
+
+                    var buffer = new byte[256];
+                    var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
+                    Assert.Equal(14, byteCount1);
+
+                    await server.Host.StopAsync();
+
+                    // For some reason this doesn't throw, but it does return 0 bytes
+                    var byteCount2 = await stream.ReadAsync(buffer, 0, 256);
+                    Assert.Equal(0, byteCount2);
                 }
             }
         }

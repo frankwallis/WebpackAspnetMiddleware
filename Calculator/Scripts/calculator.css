@@ -1,12 +1,15 @@
 
 .adder-container {
+	display: inline-block;
 	font-size: 2rem;
+	border: 4px solid darkslategray;
+	border-radius: .2em;
+	padding: .1em;
 }
 
 .adder-display {
 	box-sizing: border-box;
-	border: solid 2px gray;
-	border-radius: .2em;
+	border: solid 2px darkgray;
 	width: 6em;
 	display: block;
 	margin-bottom: .2em;
@@ -21,13 +24,13 @@
 }
 
 .adder-button-clear {
-	background: orangered; 
+	background: rosybrown; 
 }
 
 .adder-button-add {
-	background: mediumseagreen;
+	background: goldenrod;
 }
 
 .adder-button-digit {
-	background: dodgerblue;
+	background: steelblue;
 }
