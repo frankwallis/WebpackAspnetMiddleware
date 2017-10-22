@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as CalculatorStore from './calculator-store'
 import './calculator.css'
 
-export class Calculator extends React.Component<any, CalculatorStore.CalculatorState> {
+export class Calculator extends React.Component<{}, CalculatorStore.CalculatorState> {
     constructor(props) {
         super(props)
         this.state = CalculatorStore.clear()
@@ -18,7 +18,7 @@ export class Calculator extends React.Component<any, CalculatorStore.CalculatorS
 
     render() {
         // build the rows of digits
-        let buttons = [
+        const buttons = [
             // UNCOMMENT ME! 
             // [1, 2, 3].map((digit) => this.inputButton(digit)),
             [4, 5, 6].map((digit) => this.inputButton(digit)),
@@ -37,7 +37,7 @@ export class Calculator extends React.Component<any, CalculatorStore.CalculatorS
         ])
 
         // wrap with row divs
-        let buttonrows = buttons.map((row, idx) => {
+        const buttonrows = buttons.map((row, idx) => {
             return (
                 <div key={"row" + idx} className="adder-row">
                     {row}

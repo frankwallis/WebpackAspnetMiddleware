@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Calculator } from './calculator'
 
-let main = document.getElementById('main')
+const main = document.getElementById('main')
 const render = (App) => ReactDOM.render(<AppContainer><App /></AppContainer>, main)
 render(Calculator)
 

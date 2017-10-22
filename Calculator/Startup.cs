@@ -14,8 +14,6 @@ namespace Calculator
         {
             var application = new WebHostBuilder()
                   .UseContentRoot(Directory.GetCurrentDirectory())
-                  //.UseConfiguration(WebApplicationConfiguration.GetDefault(args))
-                  //.UseIISIntegration()
                   .UseKestrel()
                   .UseStartup<Startup>()
                   .Build();
