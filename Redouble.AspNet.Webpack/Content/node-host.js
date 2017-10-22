@@ -5,16 +5,34 @@ var handlerScript = process.argv[process.argv.length - 1];
 var handler = null;
 
 var tcpServer = net.createServer(function (socket) {
-    // TODO
-    //if (handler) throw new Error("session is already connected");
     socket.setKeepAlive(true);
     socket.setNoDelay();
-    handler = createHandler(socket);
+    
+    try {
+        handler = createHandler(socket);
+    }
+    catch(err) {
+        console.error(err.message);
+        tcpServer.close();
+        return process.exit(1);
+    }
+
+    socket.on('error', function () { handleError(socket); });
+    socket.on('data', function (buffer) {
+        while (buffer.length > 0) {
+            var size = buffer.readIntLE(0, 4);
+            if (size <= 0) throw new Error("Invalid message");
+            var msg = buffer.slice(4, size + 4);
+            buffer = buffer.slice(size + 4);
+            handleData(socket, msg);
+        }
+    });    
 });
 
 tcpServer.on('error', (e) => {
-    console.log('Error opening socket: [' + e.code + ']');
-    server.close();
+    console.error('Error opening socket: [' + e.code + ']');
+    tcpServer.close();
+    return process.exit(1);
 });
 
 tcpServer.listen(0, '127.0.0.1', function () {
@@ -94,22 +112,12 @@ function createHandler(socket) {
     // load the handler module 
     var exportFunc = require(handlerScript);
 
-    if (typeof exportFunc !== 'function') throw new Error("handler script should export a default function");
+    if (typeof exportFunc !== 'function')
+        throw new Error("handler script should export a default function");
 
     // call the default export function   
     var handler = exportFunc(function (event, data) {
         writeEvent(socket, event, data);
-    });
-
-    socket.on('error', function () { handleError(socket); });
-    socket.on('data', function (buffer) {
-        while (buffer.length > 0) {
-            var size = buffer.readIntLE(0, 4);
-            if (size <= 0) throw new Error("Invalid message");
-            var msg = buffer.slice(4, size + 4);
-            buffer = buffer.slice(size + 4);
-            handleData(socket, msg);
-        }
     });
 
     return handler;
