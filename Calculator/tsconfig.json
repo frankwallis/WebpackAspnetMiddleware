@@ -5,6 +5,8 @@
     "sourceMap": true,
     "jsx": "react",
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "types": [
       "webpack-env"
     ]

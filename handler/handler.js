@@ -58,21 +58,36 @@ module.exports = function (emit) {
 
       var compiler = webpack(webpackConfig);
       var fs = new MemoryFileSystem();
-
-      compiler.plugin('invalid', onInvalid);
-      compiler.plugin('watch-run', onInvalidAsync);
-      compiler.plugin('run', onInvalid);
-      compiler.plugin('done', function (stats) {
-         onLogStats(stats, logLevel);
-         onValid(stats);
-      });
-
       compiler.outputFileSystem = fs;
-
-      instance = compiler.watch({}, function (err, stats) {
+      
+      if (compiler.hooks) {
+         compiler.hooks.invalid.tap('webpack-aspnet-middleware', onInvalid);
+         compiler.hooks.watchRun.tap('webpack-aspnet-middleware', onInvalid);
+         compiler.hooks.run.tap('webpack-aspnet-middleware', onInvalid);
+         compiler.hooks.done.tap('webpack-aspnet-middleware', function (stats) {
+            onLogStats(stats, logLevel);
+            onValid(stats);
+         });
+         
+         instance = compiler.watch({}, function (err, stats) {
+            callback(err);
+         });
          instance.fs = fs;
-         callback(err);
-      });
+      } else {
+         // back-compatibility for webpack 3
+         compiler.plugin('invalid', onInvalid);
+         compiler.plugin('watch-run', onInvalidAsync);
+         compiler.plugin('run', onInvalid);
+         compiler.plugin('done', function (stats) {
+            onLogStats(stats, logLevel);
+            onValid(stats);
+         });
+
+         instance = compiler.watch({}, function (err, stats) {
+            instance.fs = fs;
+            callback(err);
+         });
+      }
    }
 
    var pending = [];
