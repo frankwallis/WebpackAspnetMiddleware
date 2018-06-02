@@ -56,7 +56,7 @@ namespace Redouble.AspNet.Webpack
         private async Task<NodeHost> CreateHost(IHostingEnvironment environment, IApplicationLifetime lifetime)
         {
             var environmentVariables = new Dictionary<string, string>();
-            environmentVariables["NODE_ENV"] = environment.IsDevelopment() ? "development" : "production";
+            environmentVariables["NODE_ENV"] = environment.EnvironmentName.ToLower();
 
             var host = NodeHost.Create("webpack-aspnet-middleware", environment.ContentRootPath, lifetime.ApplicationStopping, _logger, environmentVariables);
             host.Emit += WebpackEmit;
