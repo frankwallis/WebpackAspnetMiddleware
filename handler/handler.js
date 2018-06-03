@@ -46,15 +46,24 @@ module.exports = function (emit) {
       if (msg) emit('log', msg);   
    }
 
-   function start(configPath, logLevelEnum, callback) {
+   function start(configPath, startParams, callback) {
       if (instance) return callback(new Error('webpack is already started'))
 
+      // back-compatibility with 2.2.2, can be removed after major version bump
+      if (typeof startParams === 'number') {
+         startParams = {
+            logLevel: startParams,
+            envParam: process.env.NODE_ENV
+         };
+      }
+
       var webpackConfig = require(configPath);
-      if (typeof webpackConfig === 'function')
-         webpackConfig = webpackConfig(process.env.NODE_ENV);
+      if (typeof webpackConfig === 'function') {
+         webpackConfig = webpackConfig(startParams.envParam);
+      }
 
       var levels = ['none', 'errors-only', 'minimal', 'normal', 'verbose'];
-      var logLevel = levels[logLevelEnum] || 'normal';
+      var logLevelName = levels[startParams.logLevel] || 'normal';
 
       var compiler = webpack(webpackConfig);
       var fs = new MemoryFileSystem();
@@ -65,7 +74,7 @@ module.exports = function (emit) {
          compiler.hooks.watchRun.tap('webpack-aspnet-middleware', onInvalid);
          compiler.hooks.run.tap('webpack-aspnet-middleware', onInvalid);
          compiler.hooks.done.tap('webpack-aspnet-middleware', function (stats) {
-            onLogStats(stats, logLevel);
+            onLogStats(stats, logLevelName);
             onValid(stats);
          });
          
@@ -79,7 +88,7 @@ module.exports = function (emit) {
          compiler.plugin('watch-run', onInvalidAsync);
          compiler.plugin('run', onInvalid);
          compiler.plugin('done', function (stats) {
-            onLogStats(stats, logLevel);
+            onLogStats(stats, logLevelName);
             onValid(stats);
          });
 

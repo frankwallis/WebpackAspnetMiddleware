@@ -4,7 +4,7 @@ var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = function (env) {
     return {
-        mode: 'development',
+        mode: env,
         context: path.join(__dirname, 'Scripts'),
         entry: ['react-hot-loader/patch', 'webpack-aspnet-middleware/client', './index'],
         devtool: (env === 'development') ? 'cheap-module-eval-source-map' : 'source-map',

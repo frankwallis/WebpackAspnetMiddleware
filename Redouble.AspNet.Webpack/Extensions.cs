@@ -9,13 +9,15 @@ namespace Redouble.AspNet.Webpack
            string configFile = "webpack.config.js",
            string publicPath = "/",
            string webRoot = "wwwroot",
-           WebpackLogLevel logLevel = WebpackLogLevel.Normal)
+           WebpackLogLevel logLevel = WebpackLogLevel.Normal,
+           object envParam = null)
         {
             var options = new WebpackOptions();
             options.ConfigFile = configFile;
             options.PublicPath = publicPath;
             options.WebRoot = webRoot;
             options.LogLevel = logLevel;
+            options.EnvParam = envParam;
             options.Heartbeat = 10000;
 
             services.AddSingleton<WebpackOptions>(options);

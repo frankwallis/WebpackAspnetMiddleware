@@ -20,6 +20,8 @@ namespace Redouble.AspNet.Webpack
         public string WebRoot { get; set; }
         /* controls output from webpack */
         public WebpackLogLevel LogLevel { get; set; }
+        /* the 'env' parameter passed to webpack.config.js, if not set it will default to the name of the environment */
+        public object EnvParam { get; set; }
         /* controls frequency of heartbeats useful for testing */
         public int Heartbeat { get; set; }
     }
@@ -58,9 +60,14 @@ namespace Redouble.AspNet.Webpack
             var environmentVariables = new Dictionary<string, string>();
             environmentVariables["NODE_ENV"] = environment.EnvironmentName.ToLower();
 
+            var startParams = new {                
+                LogLevel = _options.LogLevel,
+                EnvParam = _options.EnvParam ?? environment.EnvironmentName.ToLower()
+            };
+
             var host = NodeHost.Create("webpack-aspnet-middleware", environment.ContentRootPath, lifetime.ApplicationStopping, _logger, environmentVariables);
             host.Emit += WebpackEmit;
-            await host.Invoke("start", Path.Combine(environment.ContentRootPath, _options.ConfigFile), _options.LogLevel);
+            await host.Invoke("start", Path.Combine(environment.ContentRootPath, _options.ConfigFile), startParams.LogLevel);
             return host;
         }
 

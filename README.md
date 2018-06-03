@@ -36,7 +36,9 @@ The DevServer middleware serves up all the files produced by the webpack instanc
         configFile: "webpack.config.js",      // relative to project directory
         publicPath: "/webpack/",              // should match output.publicPath in your webpack config
         webRoot: "./wwwroot",                 // relative to project directory
-        logLevel: WebpackLogLevel.Normal      // None, ErrorsOnly, Minimal, Normal or Verbose
+        logLevel: WebpackLogLevel.Normal,     // None, ErrorsOnly, Minimal, Normal or Verbose
+        envParam: null                        // the 'env' param passed to webpack.config.js,
+                                              // if not set the current environment name is passed
      );       
   }
 
@@ -52,12 +54,11 @@ The DevServer middleware serves up all the files produced by the webpack instanc
 
 4) *Optional:* configure hot-reloading in your webpack configuration file:
 
-a) Add these to the ```plugins``` array:
+a) Ensure Webpack ```mode``` is set to 'development' and add the HotModule plugin:
 ```js
+  mode: 'development',
   plugins: [
-     new webpack.HotModuleReplacementPlugin(),
-     new webpack.NoEmitOnErrorsPlugin(),
-     new webpack.NamedModulesPlugin(),
+     new webpack.HotModuleReplacementPlugin()
   ]
 ```
 b) Add the hot reload client to the ```entry``` array:
