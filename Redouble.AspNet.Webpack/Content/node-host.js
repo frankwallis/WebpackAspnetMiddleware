@@ -102,7 +102,7 @@ function writeEvent(socket, event, data) {
 function writeMessage(socket, msg) {
     var msgStr = JSON.stringify(msg);
     var msgLength = Buffer.byteLength(msgStr);
-    var buffer = new Buffer(msgLength + 4);
+    var buffer = Buffer.alloc(msgLength + 4);
     buffer.writeUInt32LE(msgLength << 0, 0);
     buffer.write(msgStr, 4);
     socket.write(buffer);
