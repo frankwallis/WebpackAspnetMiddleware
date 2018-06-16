@@ -94,9 +94,12 @@ namespace Redouble.AspNet.Webpack
 
         private void WebpackValid(object sender, JToken e)
         {
-            var msg = e as JObject;
-            msg["action"] = "built";
-            Emit(msg.ToString(Newtonsoft.Json.Formatting.None));
+            var msgList = e as JArray;
+            foreach (var msg in msgList)
+            {
+                msg["action"] = "built";
+                Emit(msg.ToString(Newtonsoft.Json.Formatting.None));
+            }
         }
 
         private void WebpackInvalid(object sender, EventArgs e)

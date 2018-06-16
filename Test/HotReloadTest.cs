@@ -104,7 +104,8 @@ namespace Redouble.AspNet.Webpack.Test
                     var byteCount1 = await stream.ReadAsync(buffer, 0, 256);
                     Assert.Equal(14, byteCount1);
 
-                    var e = new JObject();
+                    var e = new JArray();
+                    e.Add(new JObject());
                     mock.OnValid(e);
 
                     // TODO

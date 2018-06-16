@@ -17,32 +17,43 @@ module.exports = function (emit) {
       callback();
    }
 
-   function onValid(stats) {
+   function onValid(statsOrMultiStats) {
       valid = true;
-      stats = stats.toJson();
+      statsOrMultiStats = statsOrMultiStats.toJson();
+      var statsList = statsOrMultiStats.children.length
+         ? statsOrMultiStats.children
+         : [statsOrMultiStats];
 
-      var map = stats.modules.reduce(function (result, module) {
-         result[module.id] = module.name;
-         return result;
-      }, {});
+      var argsList = statsList.map(stats => {
+         var moduleMap = stats.modules.reduce(function (result, module) {
+            result[module.id] = module.name;
+            return result;
+         }, {});
 
-      var args = {
-         name: stats.name,
-         time: stats.time,
-         hash: stats.hash,
-         warnings: stats.warnings || [],
-         errors: stats.errors || [],
-         modules: map
-      };
+         return {
+            name: stats.name,
+            time: stats.time,
+            hash: stats.hash,
+            warnings: stats.warnings || [],
+            errors: stats.errors || [],
+            modules: moduleMap
+         };
+      });
 
-      emit('valid', args);
+      emit('valid', argsList);
       process.nextTick(flushPending);
    }
 
-   function onLogStats(stats, logLevel) {
-      var options = stats.constructor.presetToOptions(logLevel);
+   function onLogStats(statsOrMultiStats, logLevel) {
+      // Annoying but seems to be the only way to get colors when using a preset
+      var presetToOptions = statsOrMultiStats.constructor.presetToOptions
+         ? statsOrMultiStats.constructor.presetToOptions
+         : statsOrMultiStats.stats[0].constructor.presetToOptions;
+
+      var options = presetToOptions(logLevel);
       options.colors = true;
-      var msg = stats.toString(options);
+
+      var msg = statsOrMultiStats.toString(options);
       if (msg) emit('log', msg);   
    }
 
