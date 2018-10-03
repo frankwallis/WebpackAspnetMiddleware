@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -22,6 +23,7 @@ namespace Redouble.AspNet.Webpack
 
             services.AddSingleton<WebpackOptions>(options);
             services.AddSingleton<IWebpackService, WebpackService>();
+            services.AddHostedService<WebpackRunner>();
         }
 
         public static void UseWebpackHotReload(this IApplicationBuilder app)

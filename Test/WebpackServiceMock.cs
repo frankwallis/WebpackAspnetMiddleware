@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace Redouble.AspNet.Webpack.Test
@@ -64,6 +65,11 @@ namespace Redouble.AspNet.Webpack.Test
         public bool IsWebpackFile(string filename)
         {
             return _files.ContainsKey(filename);
+        }
+
+        public Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

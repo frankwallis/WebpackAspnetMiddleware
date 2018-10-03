@@ -26,7 +26,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 'result1'); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 var result = await host.Invoke<string>("method1", new object[0]);
                 Assert.Equal("result1", result);
@@ -38,7 +38,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(arg1, arg2, callback) { callback(null, arg1 + arg2); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 var result = await host.Invoke<string>("method1", new object[] { "quick", "fox" });
                 Assert.Equal("quickfox", result.ToString());
@@ -50,7 +50,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback('an error occurred', null); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 try
                 {
@@ -69,7 +69,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(new Error('an error occurred'), null); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 try
                 {
@@ -88,7 +88,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, 42); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 try
                 {
@@ -107,7 +107,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(callback) { callback(null, '[’]'); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 var result = await host.Invoke<string>("method1");
                 Assert.Equal("[’]", result);
@@ -119,7 +119,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(str, callback) { callback(null, str === '[’]'); }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 var result = await host.Invoke<bool>("method1", "[’]");
                 Assert.True(result);
@@ -131,7 +131,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function() { return { method1: function(str, callback) { callback(null, Buffer.from(str).toString('base64')) }}}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 var result = await host.Invoke<byte[]>("method1", "BinaryData");
                 Assert.Equal(result, System.Text.Encoding.UTF8.GetBytes("BinaryData"));
@@ -143,7 +143,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', { arg1: 'arg1' }); callback(null, 42); } }}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 string emitEvt = "";
                 dynamic emitArgs = null;
@@ -167,7 +167,7 @@ namespace Redouble.AspNet.Webpack.Test
         {
             var script = "module.exports = function(emit) { return { start: function(callback) { emit('event1', 'arg1'); callback(null, 42); } }}";
 
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), null))
             {
                 string emitEvt = "";
                 dynamic emitArgs = null;
@@ -194,7 +194,7 @@ namespace Redouble.AspNet.Webpack.Test
             var environmentVariables = new Dictionary<string, string>();
             environmentVariables["TESTVAR"] = "TESTVALUE";
             
-            using (var host = NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), environmentVariables))
+            using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), environmentVariables))
             {
                 string emitEvt = "";
                 dynamic emitArgs = null;

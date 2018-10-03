@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.AspNetCore.NodeServices.HostingModels;
 
@@ -49,39 +49,37 @@ namespace Redouble.AspNet.Webpack
         ) {
         }
 
-        public static NodeHost Create(string handlerFile, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
+        public static async Task<NodeHost> Create(string handlerFile, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
         {
             var hostScript = EmbeddedResourceReader.Read(typeof(NodeHost), "/Content/node-host.js");
-            return new NodeHost(hostScript, projectPath, "\"" + handlerFile + "\"", applicationStopping, logger, environmentVars);
+            var result = new NodeHost(hostScript, projectPath, "\"" + handlerFile + "\"", applicationStopping, logger, environmentVars);
+            await result.Start();
+            return result;
         }
 
-        public static NodeHost CreateFromScript(string handlerScript, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
+        public static async Task<NodeHost> CreateFromScript(string handlerScript, string projectPath, CancellationToken applicationStopping, ILogger logger, IDictionary<string, string> environmentVars)
         {
             var handlerFile = new StringAsTempFile(handlerScript, applicationStopping);
-            var result = NodeHost.Create(handlerFile.FileName, projectPath, applicationStopping, logger, environmentVars);
+            var result = await NodeHost.Create(handlerFile.FileName, projectPath, applicationStopping, logger, environmentVars);
             result._handlerFile = handlerFile;
             return result;
         }
 
-        private async Task EnsureClient()
+        public Task Listener { get; private set; }
+
+        private async Task Start()
         {
-            if (this._client == null)
-            {
-                var source = new CancellationTokenSource();
-                await InvokeExportAsync<Object>(source.Token, "", "");
+            await InvokeExportAsync<Object>(CancellationToken.None, "", "");
 
-                this._client = new TcpClient();
-
-                await this._client.ConnectAsync("127.0.0.1", _portNumber);
-                this._client.NoDelay = true;
-                //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-                this._stream = this._client.GetStream();
-
-                Task.Factory.StartNew(this.ReceiveAll);
-            }
+            this._client = new TcpClient();
+            await this._client.ConnectAsync("127.0.0.1", _portNumber);
+            this._client.NoDelay = true;
+            //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            this._stream = this._client.GetStream();
+            this.Listener = this.ReceiveAll();
         }
 
-        private async void ReceiveAll()
+        private async Task ReceiveAll()
         {
             try
             {
@@ -172,8 +170,6 @@ namespace Redouble.AspNet.Webpack
 
         public async Task<JToken> Invoke(string methodName, params object[] args)
         {
-            await this.EnsureClient();
-
             var msg = new NodeHostMessage();
             msg.Type = "invoke";
             msg.Id = ++this._maxId;

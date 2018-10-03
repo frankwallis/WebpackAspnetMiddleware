@@ -1,10 +1,11 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
@@ -33,6 +34,7 @@ namespace Redouble.AspNet.Webpack
         Task<IWebpackFile> GetFile(string filename);
         bool IsWebpackFile(string filename);
         WebpackOptions Options { get; }
+        Task ExecuteAsync(CancellationToken stoppingToken);
     }
 
     public class WebpackService : IWebpackService
@@ -40,35 +42,36 @@ namespace Redouble.AspNet.Webpack
         private IHostingEnvironment _environment;
         private ILogger _logger;
         private WebpackOptions _options;
+        private NodeHost _host;
 
         public WebpackService(
             IHostingEnvironment environment,
             ILogger<WebpackService> logger,
-            IApplicationLifetime lifetime,
             WebpackOptions options)
         {
             _environment = environment;
             _logger = logger;
-            _options = options;
-            _host = CreateHost(_environment, lifetime);
+            _options = options;            
         }
 
-        private Task<NodeHost> _host;
-
-        private async Task<NodeHost> CreateHost(IHostingEnvironment environment, IApplicationLifetime lifetime)
+        public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var environmentVariables = new Dictionary<string, string>();
-            environmentVariables["NODE_ENV"] = environment.EnvironmentName.ToLower();
+            environmentVariables["NODE_ENV"] = _environment.EnvironmentName.ToLower();
 
             var startParams = new {                
                 LogLevel = _options.LogLevel,
-                EnvParam = _options.EnvParam ?? environment.EnvironmentName.ToLower()
+                EnvParam = _options.EnvParam ?? _environment.EnvironmentName.ToLower()
             };
 
-            var host = NodeHost.Create("webpack-aspnet-middleware", environment.ContentRootPath, lifetime.ApplicationStopping, _logger, environmentVariables);
-            host.Emit += WebpackEmit;
-            await host.Invoke("start", Path.Combine(environment.ContentRootPath, _options.ConfigFile), startParams.LogLevel);
-            return host;
+            _host = await NodeHost.Create("webpack-aspnet-middleware", _environment.ContentRootPath, stoppingToken, _logger, environmentVariables);
+            _host.Emit += WebpackEmit;
+            
+            await _host.Invoke("start", Path.Combine(_environment.ContentRootPath, _options.ConfigFile), startParams.LogLevel);
+            await _host.Listener;
+
+            _host.Emit -= WebpackEmit;
+            _host = null;
         }
 
         private void WebpackEmit(object sender, EmitEventArgs e)
@@ -89,10 +92,14 @@ namespace Redouble.AspNet.Webpack
         }
 
         public async Task<IWebpackFile> GetFile(string filename)
-        {
-            var host = await _host;
+        {            
+            if (_host == null)
+            {
+                throw new Exception("WebpackService has not been started");
+            }
+
             var absolutePath = Path.Combine(_environment.ContentRootPath, _options.WebRoot, filename.Substring(1));
-            var webpackFile = await host.Invoke<WebpackFile>("getFile", absolutePath);
+            var webpackFile = await _host.Invoke<WebpackFile>("getFile", absolutePath);
             return webpackFile;
         }
 

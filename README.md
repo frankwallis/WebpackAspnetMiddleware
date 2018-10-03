@@ -17,8 +17,8 @@ The DevServer middleware serves up all the files produced by the webpack instanc
 1) Add the [Redouble.AspNet.Webpack](https://www.nuget.org/packages/Redouble.Aspnet.Webpack/) NuGet package to your project dependencies:
 ```xml
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-    <PackageReference Include="Redouble.AspNet.Webpack" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Redouble.AspNet.Webpack" Version="3.0.0" />
     ...
 ```
 
