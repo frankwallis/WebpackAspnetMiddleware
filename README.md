@@ -79,7 +79,7 @@ npm install
 dotnet restore
 dotnet run
 ```
-Open up [localhost:5000](http://localhost:5000) in your browser and then try editing ```samples/Calculator/Scripts/calculator.tsx```.
+Open up [localhost:5000](http://localhost:5000) in your browser and then try editing ```Calculator/Scripts/calculator.tsx```.
 
 # Troubleshooting
 
