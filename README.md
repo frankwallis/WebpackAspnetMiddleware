@@ -54,17 +54,17 @@ The DevServer middleware serves up all the files produced by the webpack instanc
 
 4) *Optional:* configure hot-reloading in your webpack configuration file:
 
-a) Ensure Webpack ```mode``` is set to 'development' and add the HotModule plugin:
-```js
-  mode: 'development',
-  plugins: [
-     new webpack.HotModuleReplacementPlugin()
-  ]
-```
-b) Add the hot reload client to the ```entry``` array:
-```js
-  entry: [ 'webpack-aspnet-middleware/client', './index' ],
-```
+    a) Ensure Webpack ```mode``` is set to 'development' and add the hot reloading plugin:
+    ```js
+      mode: 'development',
+      plugins: [
+         new webpack.HotModuleReplacementPlugin()
+      ]
+    ```
+    b) Add the hot reloading client to the ```entry``` array:
+    ```js
+      entry: [ 'webpack-aspnet-middleware/client', './index' ],
+    ```
 5) Start ASP.NET:
 ```sh
   $ dotnet run
