@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Redouble.AspNet.Webpack</AssemblyTitle>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <Authors>Frank Wallis</Authors>
     <Description>Webpack development middleware for ASP.NET 5</Description>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>

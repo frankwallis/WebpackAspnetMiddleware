@@ -193,7 +193,7 @@ namespace Redouble.AspNet.Webpack.Test
 
             var environmentVariables = new Dictionary<string, string>();
             environmentVariables["TESTVAR"] = "TESTVALUE";
-            
+
             using (var host = await NodeHost.CreateFromScript(script, "", GetApplicationStopping(), GetLogger(), environmentVariables))
             {
                 string emitEvt = "";

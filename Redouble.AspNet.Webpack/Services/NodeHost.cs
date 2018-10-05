@@ -65,7 +65,7 @@ namespace Redouble.AspNet.Webpack
             return result;
         }
 
-        public Task Listener { get; private set; }
+        public Task Stopped { get; private set; }
 
         private async Task Start()
         {
@@ -76,7 +76,7 @@ namespace Redouble.AspNet.Webpack
             this._client.NoDelay = true;
             //this._client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
             this._stream = this._client.GetStream();
-            this.Listener = this.ReceiveAll();
+            this.Stopped = this.ReceiveAll();
         }
 
         private async Task ReceiveAll()

@@ -34,7 +34,8 @@ namespace Redouble.AspNet.Webpack
         Task<IWebpackFile> GetFile(string filename);
         bool IsWebpackFile(string filename);
         WebpackOptions Options { get; }
-        Task ExecuteAsync(CancellationToken stoppingToken);
+        Task Start(CancellationToken stoppingToken);
+        Task Stopped { get; }
     }
 
     public class WebpackService : IWebpackService
@@ -54,7 +55,7 @@ namespace Redouble.AspNet.Webpack
             _options = options;            
         }
 
-        public async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task Start(CancellationToken stoppingToken)
         {
             var environmentVariables = new Dictionary<string, string>();
             environmentVariables["NODE_ENV"] = _environment.EnvironmentName.ToLower();
@@ -68,10 +69,14 @@ namespace Redouble.AspNet.Webpack
             _host.Emit += WebpackEmit;
             
             await _host.Invoke("start", Path.Combine(_environment.ContentRootPath, _options.ConfigFile), startParams.LogLevel);
-            await _host.Listener;
+        }
 
-            _host.Emit -= WebpackEmit;
-            _host = null;
+        public Task Stopped
+        {
+            get
+            {
+                return _host?.Stopped;
+            }
         }
 
         private void WebpackEmit(object sender, EmitEventArgs e)

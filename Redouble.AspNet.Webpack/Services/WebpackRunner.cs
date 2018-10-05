@@ -5,18 +5,26 @@ using Microsoft.Extensions.Hosting;
 
 namespace Redouble.AspNet.Webpack
 {
-    public class WebpackRunner : BackgroundService
+    public class WebpackRunner : IHostedService
     {
         private IWebpackService _webpackService;
+        private CancellationTokenSource _stoppingTokenSource;
 
         public WebpackRunner(IWebpackService webpackService)
         {
              _webpackService = webpackService;
+             _stoppingTokenSource = new CancellationTokenSource();
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken token)
         {
-            return _webpackService.ExecuteAsync(stoppingToken);
+            return _webpackService.Start(_stoppingTokenSource.Token);
+        }
+
+        public Task StopAsync(CancellationToken token)
+        {
+            _stoppingTokenSource.Cancel();
+            return _webpackService.Stopped;
         }
     }
 }

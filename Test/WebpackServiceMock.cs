@@ -67,9 +67,17 @@ namespace Redouble.AspNet.Webpack.Test
             return _files.ContainsKey(filename);
         }
 
-        public Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task Start(CancellationToken stoppingToken)
         {
             throw new NotImplementedException();
+        }
+
+        public Task Stopped
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
