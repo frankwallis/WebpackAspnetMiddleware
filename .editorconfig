@@ -1,0 +1,18 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+[*.{js,jsx,ts,tsx,css,json}]
+charset = utf-8
+indent_style = space
+indent_size = 2
+
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
