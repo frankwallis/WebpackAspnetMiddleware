@@ -1,4 +1,4 @@
-module.exports = function (emit) {
+module.exports = function webpackHandler(emit) {
 
   var webpack = require('webpack');
   var MemoryFileSystem = require('memory-fs');
@@ -7,7 +7,7 @@ module.exports = function (emit) {
   var instance = null;
   var valid = false;
 
-  function onInvalid(compiler) {
+  function onInvalid() {
     if (valid) emit('invalid');
     valid = false;
   }
@@ -25,7 +25,7 @@ module.exports = function (emit) {
       : [statsOrMultiStats];
 
     var argsList = statsList.map(stats => {
-      var moduleMap = stats.modules.reduce(function (result, module) {
+      var moduleMap = stats.modules.reduce((result, module) => {
         result[module.id] = module.name;
         return result;
       }, {});
@@ -68,11 +68,20 @@ module.exports = function (emit) {
       };
     }
 
+    getConfig(configPath, startParams)
+      .then(config => runWebpack(config, startParams, callback))
+      .catch(err => callback(err));
+  }
+
+  function getConfig(configPath, startParams) {
     var webpackConfig = require(configPath);
     if (typeof webpackConfig === 'function') {
       webpackConfig = webpackConfig(startParams.envParam);
     }
+    return Promise.resolve(webpackConfig);
+  }
 
+  function runWebpack(webpackConfig, startParams, callback) {
     var levels = ['none', 'errors-only', 'minimal', 'normal', 'verbose'];
     var logLevelName = levels[startParams.logLevel] || 'normal';
 
@@ -84,12 +93,12 @@ module.exports = function (emit) {
       compiler.hooks.invalid.tap('webpack-aspnet-middleware', onInvalid);
       compiler.hooks.watchRun.tap('webpack-aspnet-middleware', onInvalid);
       compiler.hooks.run.tap('webpack-aspnet-middleware', onInvalid);
-      compiler.hooks.done.tap('webpack-aspnet-middleware', function (stats) {
+      compiler.hooks.done.tap('webpack-aspnet-middleware', stats => {
         onLogStats(stats, logLevelName);
         onValid(stats);
       });
 
-      instance = compiler.watch({}, function (err, stats) {
+      instance = compiler.watch({}, err => {
         callback(err);
       });
       instance.fs = fs;
@@ -98,12 +107,12 @@ module.exports = function (emit) {
       compiler.plugin('invalid', onInvalid);
       compiler.plugin('watch-run', onInvalidAsync);
       compiler.plugin('run', onInvalid);
-      compiler.plugin('done', function (stats) {
+      compiler.plugin('done', stats => {
         onLogStats(stats, logLevelName);
         onValid(stats);
       });
 
-      instance = compiler.watch({}, function (err, stats) {
+      instance = compiler.watch({}, err => {
         instance.fs = fs;
         callback(err);
       });
@@ -127,10 +136,10 @@ module.exports = function (emit) {
   function getFile(filename, callback) {
     if (!instance) return callback(new Error('webpack is not started'));
 
-    runOnValid(function () {
-      var mimeType = mime.lookup(filename);
+    runOnValid(() => {
+      var mimeType = mime.getType(filename);
 
-      instance.fs.readFile(filename, 'base64', function (err, contents) {
+      instance.fs.readFile(filename, 'base64', (err, contents) => {
         callback(err, { contents: contents, mimeType: mimeType });
       });
     });
